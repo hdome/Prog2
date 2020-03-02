@@ -34,4 +34,13 @@
             A Brun tételes feladat kidolgozása.
         </revremark>
     </revision>
+    <revision>
+        <revnumber>0.0.5</revnumber>
+        <date>2020-03-02</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Az Chomsky/a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> 
+            és Caesar/EXOR csokor feladatok kiírásának aktualizálása (a heti előadás és laborgyakorlatok támogatására).
+        </revremark>
+    </revision>
 </revhistory>

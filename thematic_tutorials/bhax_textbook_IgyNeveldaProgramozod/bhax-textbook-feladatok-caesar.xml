@@ -98,11 +98,13 @@ main ()
             Megoldás videó:
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: egy részletes feldolgozása az 
+            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">e.c és t.c forrásoknak</link>.               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>            
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>
     </section>        
     <section>
         <title>Java EXOR titkosító</title>
