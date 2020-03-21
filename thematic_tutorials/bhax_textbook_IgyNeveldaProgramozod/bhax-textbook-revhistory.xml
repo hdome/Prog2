@@ -43,4 +43,12 @@
             és Caesar/EXOR csokor feladatok kiírásának aktualizálása (a heti előadás és laborgyakorlatok támogatására).
         </revremark>
     </revision>
+    <revision>
+        <revnumber>0.0.6</revnumber>
+        <date>2020-03-21</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            A MALMÖ projektes feladatok átvezetése, minden csokor utolsó feladata Minecraft ágensprogramozás ezzel. Mottók aktualizálása.
+        </revremark>
+    </revision>
 </revhistory>
