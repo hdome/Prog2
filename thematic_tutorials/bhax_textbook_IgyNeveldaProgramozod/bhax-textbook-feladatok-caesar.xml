@@ -86,7 +86,8 @@ main ()
             </mediaobject>
         </figure>                             
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
     <section>
@@ -95,11 +96,8 @@ main ()
             Írj egy EXOR titkosítót C-ben!
         </para>
         <para>
-            Megoldás videó:
-        </para>
-        <para>
             Megoldás forrása: egy részletes feldolgozása az 
-            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">e.c és t.c forrásoknak</link>.               
+            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">posztban</link>, lásd az e.c forrást.               
         </para>
         <para>
             Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
@@ -112,13 +110,11 @@ main ()
             Írj egy EXOR titkosítót Java-ban!
         </para>
         <para>
-            Megoldás videó:
-        </para>
-        <para>
             Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#exor_titkosito">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#exor_titkosito</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
     <section xml:id="bhax-textbook-feladatok-caesar.EXOR-toro">
@@ -127,13 +123,12 @@ main ()
             Írj egy olyan C programot, amely megtöri az első feladatban előállított titkos szövegeket!
         </para>
         <para>
-            Megoldás videó:
+            Megoldás forrása: egy részletes feldolgozása az 
+            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">posztban</link>, lásd az t.c forrást.               
         </para>
         <para>
-            Megoldás forrása:                
-        </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
     <section>
@@ -148,13 +143,17 @@ main ()
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/NN_R">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/NN_R</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
     <section>
         <title>Hiba-visszaterjesztéses perceptron</title>
         <para>
-            C++
+            Fontos, hogy ebben a feladatban még nem 
+            a <link xlink:href="https://prezi.com/0u8ncvvoabcr/no-programming-programming/">neurális paradigma</link> megismerése 
+            a cél, hanem a többrétegű perceptron memóriakezelése (lásd majd a változó argumentumszámú
+            konstruktorban a <type>double ***</type> szerkezetet). 
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/XpBnR31BRJY">https://youtu.be/XpBnR31BRJY</link>
@@ -163,9 +162,23 @@ main ()
             Megoldás forrása: <link xlink:href="https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64">https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
+    <section>
+        <title>Vörös Pipacs Pokol/írd ki, mit lát Steve</title>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/-GX8dzGqTdM">https://youtu.be/-GX8dzGqTdM</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                

@@ -14,10 +14,7 @@
             nincs eltéve kiszámolt szám.
         </para>
         <para>
-            Megoldás videó:
-        </para>
-        <para>
-            Megoldás forrása:                
+            Megoldás forrása: a második előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_5.pdf">17-22 fólia</link>.               
         </para>
         <para>
             Tanulságok, tapasztalatok, magyarázat... térj ki arra is, hogy a JDK forrásaiban a Sun programozói
@@ -31,20 +28,15 @@
             Valósítsd meg C-ben az LZW algoritmus fa-építését!
         </para>
         <para>
-            Megoldás videó:
+            Megoldás forrása: <link xlink:href="https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat">https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat</link>.               
         </para>
-        <para>
-            Megoldás forrása:                
-        </para>
+
     </section>        
         
     <section>
         <title>Fabejárás</title>
         <para>
             Járd be az előző (inorder bejárású) fát pre- és posztorder is!
-        </para>
-        <para>
-            Megoldás videó:
         </para>
         <para>
             Megoldás forrása:                
@@ -58,10 +50,10 @@
             osztálya. A gyökér csomópont legyen kompozícióban a fával!
         </para>
         <para>
-            Megoldás videó:
+            Megoldás videó: <link xlink:href="https://youtu.be/_mu54BDkqiQ">https://youtu.be/_mu54BDkqiQ</link>
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: ugyanott.               
         </para>
     </section>        
                 
@@ -71,26 +63,48 @@
             Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
             fával!
         </para>
-        <para>
-            Megoldás videó: 
+       <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/_mu54BDkqiQ">https://youtu.be/_mu54BDkqiQ</link>
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása: ugyanott.               
         </para>
-    </section>                     
+     </section>                     
 
     <section>
         <title>Mozgató szemantika</title>
         <para>
-            Írj az előző programhoz mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
-            értékadásra alapozva!
+            Írj az előző programhoz másoló/mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva, a másoló értékadás pedig a másoló konstruktorra!
         </para>
         <para>
-            Megoldás videó: 
+            Megoldás videó: <link xlink:href="https://youtu.be/QBD3zh5OJ0Y">https://youtu.be/QBD3zh5OJ0Y</link>
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása: ugyanott.
         </para>
     </section>                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    <section>
+        <title>Vörös Pipacs Pokol/5x5x5 ObservationFromGrid</title>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+    <section>
+        <title>Vörös Pipacs Pokol/19 RF</title>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/VP0kfvRYD1Y">https://youtu.be/VP0kfvRYD1Y</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 </chapter>                
