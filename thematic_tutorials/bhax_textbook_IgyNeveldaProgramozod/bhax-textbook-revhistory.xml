@@ -52,4 +52,12 @@
             Prog1 feladatok aktuzalizálása. Javasolt (soft skill) filmek, elméletek, könyvek, előadások be.
         </revremark>
     </revision>
+        <revision>
+        <revnumber>0.0.7</revnumber>
+        <date>2020-03-22</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Javítások.
+        </revremark>
+    </revision>
 </revhistory>
