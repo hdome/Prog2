@@ -13,22 +13,29 @@
     <section>
         <title>Programozási alapfogalmak</title>
         <para>         
-            <citation>PICI</citation>       
+            Rövid olvasónapló a <citation>PICI</citation> könyvről.       
         </para>
     </section>        
     <section>
-        <title>Programozás bevezetés</title>
+        <title>C programozás bevezetés</title>
         <para>                
-            <citation>KERNIGHANRITCHIE</citation>
+            Rövid olvasónapló a <citation>KERNIGHANRITCHIE</citation> könyvről.
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/zmfT9miB-jY">https://youtu.be/zmfT9miB-jY</link>
         </para>        
     </section>        
     <section>
-        <title>Programozás</title>
+        <title>C++ programozás</title>
         <para>                
-            <citation>BMECPP</citation>
+            Rövid olvasónapló a <citation>BMECPP</citation> könyvről.
         </para>
     </section>        
+    <section>
+        <title>Python nyelvi bevezetés</title> könyvről.
+        <para>                
+            Rövid olvasónapló a <citation>BMEPY</citation>
+        </para>
+    </section>        
+    
 </chapter>                
