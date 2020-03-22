@@ -23,7 +23,7 @@
             <title>A Mandelbrot halmaz a komplex síkon</title>
             <mediaobject>
                 <imageobject>
-                    <imagedata fileref="img/mandel.png" scale="50" />
+                    <imagedata fileref="img/mandel.png" scale="25" />
                 </imageobject>
                 <textobject>
                     <phrase>A Mandelbrot halmaz a komplex síkon</phrase>

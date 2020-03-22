@@ -55,7 +55,7 @@ main ( int argc, char *argv[] )
   else
     {
       std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d" << std::endl;
-      return -1;
+      //return -1;
     }
 
   png::image < png::rgb_pixel > kep ( szelesseg, magassag );
