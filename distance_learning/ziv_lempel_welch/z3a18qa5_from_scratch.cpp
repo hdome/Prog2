@@ -83,13 +83,13 @@ protected:
         Node & operator=(Node &&);
         
     public:
-        Node(ValueType value): value(value), left(nullptr), right(nullptr) {}
-        ValueType getValue(){return value;}
-        Node * leftChild(){return left;}
-        Node * rightChild(){return right;}
+        Node(ValueType value, int count=0): value(value), count(count), left(nullptr), right(nullptr) {}
+        ValueType getValue() const {return value;}
+        Node * leftChild() const {return left;}
+        Node * rightChild() const {return right;}
         void leftChild(Node * node){left = node;}
         void rightChild(Node * node){right = node;}
-        int getCount(){return count;}
+        int getCount() const {return count;}
         void incCount(){++count;}        
     };
 
@@ -118,7 +118,7 @@ public:
         
         if(node)
         {
-            newNode = new Node(node->getValue());
+            newNode = new Node(node->getValue(), 42 /*node->getCount()*/);
             
             newNode->leftChild(cp(node->leftChild(), treep));            
             newNode->rightChild(cp(node->rightChild(), treep));
@@ -161,7 +161,9 @@ public:
     }
     BinRandTree & operator<<(ValueType value);
     void print(){print(root, std::cout);}
+    void printr(){print(*root, std::cout);}
     void print(Node *node, std::ostream & os);
+    void print(const Node &cnode, std::ostream & os);
     void deltree(Node *node); 
 
     Unirand ur{std::chrono::system_clock::now().time_since_epoch().count(), 0, 2};
@@ -344,6 +346,27 @@ void BinRandTree<ValueType>::print(Node *node, std::ostream & os)
 
 
 template <typename ValueType>
+void BinRandTree<ValueType>::print(const Node &node, std::ostream & os) 
+{
+
+        ++depth;
+        
+        if(node.leftChild())
+            print(*node.leftChild(), os);
+        
+        for(int i{0}; i<depth; ++i)
+            os << "---";            
+        os << node.getValue() << " " << depth << " " << node.getCount() << std::endl;     
+        
+        if(node.rightChild())
+            print(*node.rightChild(), os);
+        
+        --depth;
+    
+}
+
+
+template <typename ValueType>
 void BinRandTree<ValueType>::deltree(Node *node) 
 {
     if(node)
@@ -357,14 +380,41 @@ void BinRandTree<ValueType>::deltree(Node *node)
 }
 
 
+BinRandTree<int> bar()
+{    
+    BinRandTree<int> bt;
+    BinRandTree<int> bt2;
+
+    Unirand r(0, 0, 1);
+    
+    bt << 0 << 0 << 0;
+    bt2 << 1 << 1 << 1;
+    bt.print();
+    std::cout << " --- " << std::endl;
+    bt2.print();
+    
+    
+    return r()?bt:bt2;
+}
+
+
+
+BinRandTree<int> foo()
+{    
+    return BinRandTree<int>();
+}
+
+
 int main(int argc, char** argv, char ** env)
 {
-    BinRandTree<int> bt;
     
-    bt << 8 << 9 << 5 << 2 << 7 << 0 << 9 << 3 << 6 << 5;
-    
-    bt.print();
+    std::cout << " *** " << std::endl;
+    BinRandTree<int> bt2{bar()};
+    std::cout << " *** " << std::endl;
+    bt2.print();
 
+    
+    
 /*    
     std::cout << std::endl;
 
