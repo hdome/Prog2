@@ -1,0 +1,264 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Mandelbrot!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    
+    <section>
+        <title>Reverse engineering UML osztálydiagram</title>
+        <para>
+            UML osztálydiagram rajzolása az első védési C++ programhoz. Az osztálydiagramot a forrásokból
+            generáljuk (pl. Argo UML, Umbrello, Eclipse UML) Mutassunk rá a kompozíció és aggregáció
+            kapcsolatára a forráskódban és a diagramon, lásd még: <link xlink:href="https://youtu.be/Td_nlERlEOs">https://youtu.be/Td_nlERlEOs</link>
+        </para>
+        <para>
+            <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_6.pdf">https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_6.pdf (28-32 fólia)</link>
+        </para>
+        <para>
+            Az UML (Unfied Modeling Language) egy általános célokra szánt modellező nyelv. Számunkra abban lesz hasznos, hogy
+            ábrázoljuk az objektum orientált szemléletben írt kódunkat. Először is szükségünk lesz egy erre alkalmas programra.
+            A választás az Umbrello-ra esett, mivel ez egy ingyenes UML diagram készítő.
+        </para>
+        <para>
+            A kódimportáláshoz a varázslóra lesz szükségünk. A <function>z3a7.cpp</function> ábrázolása a feladatunk, ezért
+            a C++ nyelvet kell kiválasztanunk. Miután kiválasztottuk a nyelevet, a kiterjesztések részt bővítsük ki a <function>
+                .cpp</function>-vel, hogy improtálhassuk a kódunkat. Ezután  a fastruktúra nézetből behúzzuk az osztályokat.
+            Majd a fenti diasor alapján módosítjuk egy kicsit.
+            <figure>
+                <title>LZWBinFa UML</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/binfauml.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+        </para>
+        <para>
+            Végül egy pár szót az aggregáció és kompozíció kapcsolatáról. Ezek az egész-rész viszonynak alapvető formái.
+            Az aggregációt üres rombusszal ábrázoljuk, a kompzíciót pedig teli rombusszal. Az előbbi hozzátartozik valamihez, de önmagában is létezhet, 
+            amíg az utóbbi csak valami részeként létezhet.
+            
+        </para>
+    </section>
+    
+    <section>
+        <title>Forward engineering UML osztálydiagram</title>
+        <para>
+            UML-ben tervezzünk osztályokat és generáljunk belőle forrást!
+        </para>
+        
+        <para>
+            A feladathoz ismét az LZWBinfa C++ verzióját fogom felhasználni.
+            Az Umbrello nem csak kódból keszült diagram generálásra alkamlas, hanem fordítva is felhasználható. Ezúttal egy 
+            diagramból készítünk kódot. A kapott eredmény nem lesz futtatásra kész, ez csak egy váza lesz a programnak, az osztályok és függvények deklarációit tartalmazza.
+            A <function>Code Generation Wizard</function> használatával ez könnyen kivitelezhető. Lássuk a kapott eredményt:
+            <programlisting language="c++"><![CDATA[ 
+#ifndef LZWBINFA_H
+#define LZWBINFA_H
+#include <string>
+class LZWBinFa
+{
+public:
+  LZWBinFa ();
+  virtual ~LZWBinFa ();
+  void operator_ (char b)
+  {
+  }
+  void kiir ()
+  {
+  }
+  int getMelyseg ()
+  {
+  }
+  double getAtlag ()
+  {
+  }
+  double getSzoras ()
+  {
+  }
+  std::ostream& operator_ (std::ostream& os, LZWBinFa& bf)
+  {
+  }
+  void kiir (std::ostream& os)
+  {
+  }
+protected:
+  Csomopont gyoker;
+  int maxMelyseg;
+  double atlag;
+  double szoras;
+public:
+protected:
+public:
+  void setGyoker (Csomopont new_var)   {
+      gyoker = new_var;
+  }
+  Csomopont getGyoker ()   {
+    return gyoker;
+  }
+  void setMaxMelyseg (int new_var)   {
+      maxMelyseg = new_var;
+  }
+  int getMaxMelyseg ()   {
+    return maxMelyseg;
+  }
+  void setAtlag (double new_var)   {
+      atlag = new_var;
+  }
+  double getAtlag ()   {
+    return atlag;
+  }
+  void setSzoras (double new_var)   {
+      szoras = new_var;
+  }
+  double getSzoras ()   {
+    return szoras;
+  }
+protected:
+  void rmelyseg (Csomopont* elem)
+  {
+  }
+  void ratlag (Csomopont* elem)
+  {
+  }
+  void rszoras (Csomopont* elem)
+  {
+  }
+private:
+  Csomopont* fa;
+  int melyseg;
+  int atlagosszeg;
+  int atlagdb;
+  double szorasosszeg;
+public:
+private:
+public:
+  void setFa (Csomopont* new_var)   {
+      fa = new_var;
+  }
+  Csomopont* getFa ()   {
+    return fa;
+  }
+  void setMelyseg (int new_var)   {
+      melyseg = new_var;
+  }
+  int getMelyseg ()   {
+    return melyseg;
+  }
+  void setAtlagosszeg (int new_var)   {
+      atlagosszeg = new_var;
+  }
+  int getAtlagosszeg ()   {
+    return atlagosszeg;
+  }
+  void setAtlagdb (int new_var)   {
+      atlagdb = new_var;
+  }
+  int getAtlagdb ()   {
+    return atlagdb;
+  }
+  void setSzorasosszeg (double new_var)   {
+      szorasosszeg = new_var;
+  }
+  double getSzorasosszeg ()   {
+    return szorasosszeg;
+  }
+private:
+   LZWBinFa (const LZWBinFa& )
+  {
+  }
+  LZWBinFa& operator_ (const LZWBinFa& )
+  {
+  }
+  void kiir (Csomopont* elem, std::ostream& os)
+  {
+  }
+  void szabadit (Csomopont* elem)
+  {
+  }
+  void initAttributes () ;
+};
+#endif
+]]></programlisting>
+        </para>
+        <para>
+            Ahogy azt láthatjuk, az UML diagramoknak nayg hasznát vehetjük már tervezési fázisban is.
+            A kapott kód jól szemlélteti a program szerkezeti feképítését.
+        </para>
+    </section>
+    
+    <section>
+        <title>Egy esettan</title>
+        <para>
+            A BME-s C++ tankönyv 14. fejezetét (427-444 elmélet, 445-469 az esettan) dolgozzuk fel!
+        </para>
+        <para>
+            Felhasznált forrás: <link xlink:href="https://github.com/kovacsferencz98/Prog2/tree/master/Harmadik_het/Esettan">Kovács Ferencz</link>
+        </para>
+        <para>
+            Ennek a feladatnak is szerves részét képzik az UML diagaramok, ezért ismerkedjünk meg az alapvető dolgokkal az előzőekben látottak alapján. 
+            UML-ben téglalpokkal ábrázoljuk az osztályokat. Ezeket három részre bonthatjuk tovább. Fentről lefelé az első rész az osztály neve, majd ezt követik annak attribútumai, és végül a változókat láthatjuk.
+            Függvények és változók előtt találhatók a láthatóságot jelölő '+'(public), '-'(privát) és '#'(védett).
+        </para>
+        <para>
+            Az esettanulmány a következő. Adott egy számítógep-alkatrész ás számítógep-konfiguráció értékesítésével foglalkozó kereskedés. El kell készíteni egy olyan programot, 
+            amellyel mevvalósítjató a kereskedés alkatrészeinek és konfigurációinak a nyílvántartása. A szofvernek támogatnia kell a termékek állományból való betöltést, képernyőre kiírását, az állományba kiírását és a rugalmas árképzést.
+        </para>
+        <para>
+            Először is egy keretrendszer kialakítására van szükség osztálykönyvtárok által, ami alapszinten támogatja a termékcsaládokat. Majd erre a keretre 
+            építve egy alkatrészkezelő alkalmazás elkészítése vár ránk. A végső cél az, hogy a meglévő keretrendszerre változtatása nélkül más termékcsaládok támogatása is megvalósuljon.
+        </para>
+        <para>
+            A keretrendszer kialakításához kelleni fog egy <function>Product</function>osztály, amelyben termékek általános kezelését implementáljuk.
+            Ez az osztály tárolja az általános jellemzőket, pl.: terméknév, beszerzési ár, beszerzési dátum. A különböző termékek a <function>Product</function> leszármazottai lesznek.
+            A típusnév és típuskód a <function>Product</function> osztályban virtuális függvényként definiáljuk, mivel ezeknek a leszármazott osztályokban egyediek.
+        </para>
+        <para>
+            Az összetett termékek -például a számítógep-konfigurációk- kezelése a <function>CompositeProduct</function> osztályban valósul meg, amit szintén a <function>Product</function>-ból származtatunk.
+            Vektorban fogjuk tárolni az alkatrészeket, amit az <function>AddPart</function> metódus segítségével bővíthetünk. 
+        </para>
+        <para>
+            A termékek nyilvántartására létrehozzuk a <function>ProductInventory</function> osztályt. Arra szolgál, hogy betöltse a termékek listáját, a betöltött termékeklistákat tárolja a memóriában, a memóriából adatfolyamba írás és a formázások megjelenítése. A lista bővítésére az <function>AddProduct</function> szolgál.
+        </para>
+        <para>
+            Mivel a keretrendszer osztálykönvtár, ezért az általlunk bevezetett termékosztályokat nem ismeri, így szülséégünk van egy soztályra, amivel kiküszöbölhető ez a probléma.
+            A megoldást számunkra egy <function>ProducFactoryt</function> osztály lesz. Ebben lesz egy<function>ReadAndCreateProduct</function> függvénye, amit a  keretben definiálunk, de az általa meghívott <function>CreateProduct</function> függvény már virtuális.
+            <figure>
+                <title>Futtatás után</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/esettan.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+        </para>
+    </section>
+    
+    
+    <section>
+        <title>BPMN</title>
+        <para>
+            Rajzoljunk le egy tevékenységet BPMN-ben! 
+        </para>
+        <para>
+            A BPMN (Business Process Model and Notification) üzleti folyamatok modellezéséhez használatos folyamatábra jelölés.
+            A célja az üzleti folyamatok egységes grafikus ábrázolása. Ilyen folyamatábrákat mi is tudunk készíteni. Én böngészőből csináltam 
+            a <link xlink:href="https://demo.bpmn.io/">https://demo.bpmn.io/</link> oldalon.
+        </para>
+        <para>
+            Ahhoz, hogy mi is ábrákat készítsünk először ismerjük meg az alapvető jelöléseket. Az eseményeket(event) körrel jelöljük:
+            kezdeti esemény simar körrel, és a végső esemény pedig vastag körrel. A tevékenységeket(activity) lekerekített sarkú téglalap jelöli. Az 
+            átjáróknak(gateway) trapéz a jele. Az elemek közti összekötést(association) nyilakkal jelölik.
+            <figure>
+                <title>BPMN</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/bpmn.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+        </para>
+    </section>
+</chapter>

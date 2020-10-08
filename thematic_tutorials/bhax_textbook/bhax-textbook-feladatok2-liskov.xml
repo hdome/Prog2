@@ -1,2 +1,522 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Liskov!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
 
+<section>
+<title>Liskov helyettesítés sértése</title>
+<para>
+Írjunk olyan OO, leforduló Java és C++ kódcsipetet, amely megsérti a Liskov elvet! Mutassunk rá a
+megoldásra: jobb OO tervezés.
+</para>
+<para>
+A Liskov elv szerint minden osztály legyen helyettesíthető leszármozattaival anélkül, hogy ez befolyásolná a program
+helyes működését. Tehát ha T leszármazottja S, akkor behelyettesíthetjük T helyére S-t, és ezután is helyes eredmény kell
+kapnunk.
+</para>
+<para>
+Nézzünk egy példát az elvet sértő programra:
+<programlisting language="C++"><![CDATA[
+class Madar {
+public:
+     virtual void repul() {};
+};
+class Program {
+public:
+     void fgv ( Madar &madar ) {
+          madar.repul();
+     }
+};
+class Sas : public Madar
+{};
+class Pingvin : public Madar
+{};
+int main ( int argc, char **argv )
+{
+     Program program;
+     Madar madar;
+     program.fgv ( madar );
+     Sas sas;
+     program.fgv ( sas );
+     Pingvin pingvin;
+     program.fgv ( pingvin );
+}
+]]></programlisting>
+A Madar lett a T osztályunk. Az S osztélyok pedig a Sas és Pingvin lettek. Mivel a Madar osztály tartalmazza a  repülést, 
+így az abból származtatott Sas és Pingvin osztályok is képesek leszenk rá a porgram szerint, de tudjuk, hogy a pingvin röpképtelen, 
+ezért ez a valóságban nem következhet be.
+</para>
+<para>
+Nézzünk egy megoldást a madaras példára a Liskov elv betartása mellett:
+<programlisting language="C++"><![CDATA[
+class Madar {};
+class Program {
+public:
+     void fgv ( Madar &madar ) {
+     }
+};
+class RepuloMadar : public Madar {
+public:
+     virtual void repul() {};
+};
+class Sas : public RepuloMadar
+{};
+class Pingvin : public Madar
+{};
+int main ( int argc, char **argv )
+{
+     Program program;
+     Madar madar;
+     program.fgv ( madar );
+     Sas sas;
+     program.fgv ( sas );
+     Pingvin pingvin;
+     program.fgv ( pingvin );
+}
+]]></programlisting>
+Láthatjuk, hogy a Madar osztálynak egy új leszármazottja is van, a RepuloMadar, és ebben található a repülés. A Pingvin 
+úgyanúgy a Madar-ból származik, azonban a Sas-t a RepuloMadar-ból származtatjuk, így csak az lesz képes a repülésre.
+</para>
+<para>
+Végül az elv teljesülése Java-ban. A gondoltamenet ugyanaz, a szintaktika kicsit eltér.
+ <programlisting language="Java"><![CDATA[   
+class Madar {}
+class Program {
+	public void fgv ( Madar madar ) {}
+}
+class RepuloMadar extends Madar {
+	public void repul() {}
+}
+class Sas extends RepuloMadar {}
+class Pingvin extends Madar {}
+public class figyel{
+	
+	public static void main ( String[] args )
+	{
+  	   Program program = new Program();
+        Madar madar = new Madar();
+        program.fgv(madar);
+        
+        Sas sas = new Sas();
+        program.fgv(sas);
+        sas.repul();
+        Pingvin pingvin = new Pingvin();
+        program.fgv(pingvin);
+	}
+}
+]]></programlisting>
+</para>
+</section>
+
+<section>
+<title>Szülő-gyerek</title>
+<para>
+Írjunk Szülő-gyerek Java és C++ osztálydefiníciót, amelyben demonstrálni tudjuk, hogy az ősön
+keresztül csak az ős üzenetei küldhetőek!
+</para>
+<para>
+Ebben a feladatban be kell mutatnunk azt, hogy az ős mutatóin vagy referenciáin keresztül csak az ős metódusait érhetjük el.
+</para>
+<para>
+Nézzünk egy rövid példakódot:
+<programlisting language="c++"><![CDATA[
+#include <iostream>
+using namespace std;
+class Szulo
+{};
+class Gyerek: public Szulo{
+public: void kiir(){
+cout<<"gyerek"<<endl;
+}
+};
+int main()
+{
+Szulo* sz= new Gyerek();
+cout << sz->kiir() <<endl;
+}
+]]></programlisting>
+A Szulo gyermekosztályaként létrehozunk egy Gyerek osztályt. Ebben a leszármazottban definiálunk egy kiir nevű 
+eljárást. Ez a kód nem fog lefordulni helyesen, hiszen a kiir() metódus az ősosztályban nem található meg.
+
+</para>
+<para>
+Ha ezt a kódot Java-ban próbáljuk megvalósítani szintén problémába ütközünk, ugyanis nem hivható meg a leszármazott metódusa az ősön keresztül. 
+Errort kapunk fordításnál, jogosan. Íme a kód Java-ban:
+<programlisting language="java"><![CDATA[
+public class Szulo{
+	public class Gyerek extends Szulo{
+		public void kiir(){System.out.println("Gyerek");}
+	}
+	public  void main(String[] args)
+	{
+		Szulo szulo = new Gyerek();
+		System.out.println(szulo.kiir());
+	}
+}
+]]></programlisting>
+
+</para>
+</section>
+<section>
+<title>Anti OO</title>
+<para>
+Az előző csokorban  már megismerkedtünk a PiBBP algoritmussal, és ezúttal is ezzel fogunk dolgozni.
+A feladatunk az, hogy kiszámítsuk a 0. pozíciótól számítótt10<superscript>6</superscript>, 10<superscript>7</superscript>, 10<superscript>8</superscript>
+ számjegyét. Ezt C, C++, C# és Java-ban kell megtennünk.
+</para>
+<para>
+Annyi a dolgunk, hogy minden mérés után átírjuk a d értkét az alábbi részben:
+<programlisting language="Java"><![CDATA[
+for(int d=10000000; d<10000001; ++d)
+]]></programlisting>
+</para>
+<para>
+Eredmények:
+ <table frame='all'><title>Eredmények</title>
+            <tgroup cols='5' align='center' colsep='1' rowsep='1'>
+                    <colspec colname='c1'/>
+                    <colspec colname='c2'/>
+                    <colspec colname='c3'/>
+                    <colspec colname='c4'/>
+                    <thead>
+                    <row>
+                      <entry></entry>
+                      <entry>C</entry>
+                      <entry>C++</entry>
+                      <entry>Java</entry>
+                      <entry>C#</entry>
+                    </row>
+                    </thead>
+                    <tfoot>
+                    <row>
+                      <entry>10<superscript>8</superscript></entry>
+                      <entry>234.681</entry>
+                      <entry>229.681</entry>
+                      <entry>205.073</entry>
+                      <entry>209.051</entry>
+                    </row>
+                    </tfoot>
+                    <tbody>
+                    <row>
+                      <entry>10<superscript>6</superscript></entry>
+                      <entry>1.802</entry>
+                      <entry>1.725</entry>
+                      <entry>1.603</entry>
+                      <entry>1.698</entry>
+                    </row>
+                    <row>
+                      <entry>10<superscript>7</superscript></entry>
+                      <entry>22.538</entry>
+                      <entry>21.234</entry>
+                      <entry>18.532</entry>
+                      <entry>20.455</entry>
+                    </row>
+                    </tbody>
+                </tgroup>
+</table>
+</para>
+<para>
+Java verzió:
+<programlisting language="java">
+<![CDATA[
+public class PiBBPBench {
+    public static double d16Sj(int d, int j) {
+        
+        double d16Sj = 0.0d;
+        
+        for(int k=0; k<=d; ++k)
+            d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+        
+        
+        return d16Sj - Math.floor(d16Sj);
+    }
+    public static long n16modk(int n, int k) {
+        
+        int t = 1;
+        while(t <= n)
+            t *= 2;
+        
+        long r = 1;
+        
+        while(true) {
+            
+            if(n >= t) {
+                r = (16*r) % k;
+                n = n - t;
+            }
+            
+            t = t/2;
+            
+            if(t < 1)
+                break;
+            
+            r = (r*r) % k;
+            
+        }
+        
+        return r;
+    }
+    public static void main(String args[]) {
+        
+        double d16Pi = 0.0d;
+        
+        double d16S1t = 0.0d;
+        double d16S4t = 0.0d;
+        double d16S5t = 0.0d;
+        double d16S6t = 0.0d;
+        
+        int jegy = 0;
+        
+        long delta = System.currentTimeMillis();
+        
+        for(int d=1000000; d<1000001; ++d) {
+            
+            d16Pi = 0.0d;
+            
+            d16S1t = d16Sj(d, 1);
+            d16S4t = d16Sj(d, 4);
+            d16S5t = d16Sj(d, 5);
+            d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - Math.floor(d16Pi);
+            
+            jegy = (int)Math.floor(16.0d*d16Pi);
+            
+        }
+        
+        System.out.println(jegy);
+        delta = System.currentTimeMillis() - delta;
+        System.out.println(delta/1000.0);
+    }
+} 
+]]></programlisting>
+</para>
+<para>
+A program C-ben:
+<programlisting language="c"><![CDATA[
+#include <stdio.h>
+#include <math.h>
+#include <time.h>
+long
+n16modk (int n, int k)
+{
+  long r = 1;
+  int t = 1;
+  while (t <= n)
+    t *= 2;
+  for (;;)
+    {
+      if (n >= t)
+	{
+	  r = (16 * r) % k;
+	  n = n - t;
+	}
+      t = t / 2;
+      if (t < 1)
+	break;
+      r = (r * r) % k;
+    }
+  return r;
+}
+double
+d16Sj (int d, int j)
+{
+  double d16Sj = 0.0;
+  int k;
+  for (k = 0; k <= d; ++k)
+    d16Sj += (double) n16modk (d - k, 8 * k + j) / (double) (8 * k + j);
+  return d16Sj - floor (d16Sj);
+}
+main ()
+{
+  double d16Pi = 0.0;
+  double d16S1t = 0.0;
+  double d16S4t = 0.0;
+  double d16S5t = 0.0;
+  double d16S6t = 0.0;
+  int jegy;
+  int d;
+  clock_t delta = clock ();
+  for (d = 1000000; d < 1000001; ++d)
+    {
+      d16Pi = 0.0;
+      d16S1t = d16Sj (d, 1);
+      d16S4t = d16Sj (d, 4);
+      d16S5t = d16Sj (d, 5);
+      d16S6t = d16Sj (d, 6);
+      d16Pi = 4.0 * d16S1t - 2.0 * d16S4t - d16S5t - d16S6t;
+      d16Pi = d16Pi - floor (d16Pi);
+      jegy = (int) floor (16.0 * d16Pi);
+    }
+  printf ("%d\n", jegy);
+  delta = clock () - delta;
+  printf ("%f\n", (double) delta / CLOCKS_PER_SEC);
+}
+]]></programlisting>
+</para>
+<para>
+C# változat:
+<programlisting language="c++">
+<![CDATA[
+public class PiBBPBench {
+    public static double d16Sj(int d, int j) {
+        
+        double d16Sj = 0.0d;
+        
+        for(int k=0; k<=d; ++k)
+            d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+        
+        /*
+        for(int k=d+1; k<=2*d; ++k)
+            d16Sj += System.Math.pow(16.0d, d-k) / (double)(8*k + j);
+         */
+        
+        return d16Sj - System.Math.Floor(d16Sj);
+    }
+    public static long n16modk(int n, int k) {
+        
+        int t = 1;
+        while(t <= n)
+            t *= 2;
+        
+        long r = 1;
+        
+        while(true) {
+            
+            if(n >= t) {
+                r = (16*r) % k;
+                n = n - t;
+            }
+            
+            t = t/2;
+            
+            if(t < 1)
+                break;
+            
+            r = (r*r) % k;
+            
+        }
+        
+        return r;
+    }
+     public static void Main(System.String[]args) { 
+        
+        double d16Pi = 0.0d;
+        
+        double d16S1t = 0.0d;
+        double d16S4t = 0.0d;
+        double d16S5t = 0.0d;
+        double d16S6t = 0.0d;
+        
+        int jegy = 0;
+        
+        System.DateTime kezd = System.DateTime.Now;
+        
+        for(int d=1000000; d<1000001; ++d) {
+            
+            d16Pi = 0.0d;
+            
+            d16S1t = d16Sj(d, 1);
+            d16S4t = d16Sj(d, 4);
+            d16S5t = d16Sj(d, 5);
+            d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - System.Math.Floor(d16Pi);
+            
+            jegy = (int)System.Math.Floor(16.0d*d16Pi);
+            
+        }
+        
+        System.Console.WriteLine(jegy);
+        System.TimeSpan delta = System.DateTime.Now.Subtract(kezd);
+        System.Console.WriteLine(delta.TotalMilliseconds/1000.0);
+    }
+} 
+]]></programlisting>
+</para>
+</section>
+<section>
+<title>Ciklomatikus komplexitás</title>
+<para>
+Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalomtekintetében a 
+<link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf">https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf</link> 
+(77-79 fóliát)!
+</para>
+<para>
+A ciklomatikus komplexitás vagy másnéven McCabe-komplexitás (alkotója után kapta ezt a nevet) a program forrásának komplexitását 
+határozza meg egy konkrét számértékkel. A számítása gráfelméletre alapul. A képlet így néz ki: <function>M = E - N + 2P</function> , amelyben E a gráf éleinek száma, 
+N a csúcsok száma és P az összefüggő komponensek száma.
+</para>
+<para>
+Akkor nézzük is meg egy tetszőleges forráskód ciklomatikus komplexitás. Ez most az előzőekben már többször használt 
+PiBBP algoritmus Java verziója lesz. Én a forrás ciklomatikus komplexitását a: <link xlink:href="http://www.lizard.ws/">Lizard</link> nevű open source elemzővel számoltattam ki.
+Tetszőleges kódot másolhatunk be a bal oldalra, majd kiválasztjuk a programnyelvet, és futtatjuk rajta az elemzőt. Az eredmény ta jobb oldalon kapjuk meg:
+<figure>
+ <title>PiBBP.java ciklomatikus komplexitása</title>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="img/javacomplex.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </figure>
+</para>
+</section>
+    <section>
+        <title> EPAM: Interfész evolúció Java-ban</title>
+    <para>
+        Mutasd be milyen változások történtek Java 7 és Java 8 között az interfészekben. Miért volt erre
+        szükség, milyen problémát vezetett ez be?
+    </para>
+    <para>
+        Vizsgáljuk meg az alábbi két kódot:
+        <programlisting language="java">
+            <![CDATA[
+            package com.epam.training;
+
+public interface InterfaceA {
+
+	default public void method() {
+		System.out.println("InterfaceA.method()");
+	}
+	
+}
+            ]]></programlisting>
+A Java 7, vagy korábbi verziókban nem lehetett implementálni az interfészekben default metódust. Ehhez képest a Java 8-ban újításnak hatott
+default metódusra azért volt szükség, hogy könnyebb legyen biztosítani a visszafele kompatibilitást az ebben a verzióban megjelent újításokkal kapcsolatban. 
+Lássuk milyen problémát vetett is ez fel:
+        <programlisting language="java">
+            <![CDATA[
+            package com.epam.training;
+
+public interface InterfaceB {
+
+	default public void method() {
+		System.out.println("InterfaceB.method()");
+	}
+	
+}
+            ]]></programlisting>
+A példákban jól látható, hogy ha több interfész is rendelkezik ugyan azzal a default metódussal (és adnak hozzá default implementációt), akkor 
+fellép egy többszörös öröklődési probléma. Erre kénytelenek vagyunk megadni egy explicit módon felüldefiniáló osztályt, ahol implementáljuk 
+a két interfészt, és eldöntjük, hogy még is melyiket szeretnénk használni.
+        <programlisting language="java">
+            <![CDATA[
+public class Implementation implements InterfaceA, InterfaceB {
+
+	@Override
+	public void method() {
+		InterfaceA.super.method();
+	}
+
+}
+            ]]></programlisting>
+    </para>
+    </section>
+</chapter>

@@ -5,37 +5,308 @@
             <keyword/>
         </keywordset>
     </info>
-
     <section>
-        <title>A BPP algoritmus Java megvalósítása</title>
+        <title>OO szemlélet</title>
         <para>
+            Feladatunk egy prolártranszformációs normális generátor megvalósítása Java nyelven. Tekintsünk el a matematikai háttér megértéséről. Számunkra inkább maga a program működése a lényeges.
+        </para>
+        <para>A polártranszformációs generátor Java-ban:
+            <programlisting language="java"><![CDATA[
+public class PolarGenerator
+{
+    boolean nincsTarolt = true;
+    double tarolt;
+    
+    public PolarGenerator()
+    {
+        nincsTarolt = true;
+    }
+    
+    public double kovetkezo() 
+    {
+        if(nincsTarolt)
+        {
+            double u1, u2, v1, v2, w;
+            do{
+                u1 = Math.random();
+                u2 = Math.random();
+                v1 = 2* u1 -1;
+                v2 = 2* u2 -1;
+                w = v1*v1 + v2*v2;
+            } while (w>1);
+            
+            double r = Math.sqrt((-2 * Math.log(w) / w));
+            tarolt = r * v2;
+            nincsTarolt = !nincsTarolt;
+            return r * v1;
+        }
+        else
+        {
+            nincsTarolt = !nincsTarolt;
+            return tarolt;
+        }
+}
+            ]]></programlisting>
+            Az elején láthatunk egy <function>nincsTarolt</function> nevű boolean típusú váltózót. Ez
+            fogja meghatározni a későbbi sorokban, hogy a program generál-e számot, vagy pedig az eltárolt értéket
+            adja vissza. Ez a változó alapértéke igaz, mivel az eddig nincs semmink, amit eltárolhatnánk.
+            Amennyiben nincs tárolt számunk, a <function>kovetkezo()</function> függvény generál nekünk két
+            random számot, az egyiket visszaadja, a másikat pedig eltárolja egy <function>tarolt</function>
+            nevű double-ben. Ekkor a <function>nincsTarolt</function> hamis értéket kap. 
+            Ha már rendelkezünk tárolt értékkel, akkor a függvényünk egyszerűen kiírja a tárolt számot és
+            a <function>nincsTarolt</function> igaz értéket kap.
         </para>
         <para>
-            Megoldás videó:
+            Ha a fenti kódot összevetjük az OpenJDK Random.java állományában találhatóval, láthatjuk, 
+            hogy lényegében megegyezik a két forráskód.
+            <programlisting language="java"><![CDATA[
+private double nextNextGaussian;
+private boolean haveNextNextGaussian = false;
+ synchronized public double nextGaussian() {
+        // See Knuth, ACP, Section 3.4.1 Algorithm C.
+        if (haveNextNextGaussian) {
+            haveNextNextGaussian = false;
+            return nextNextGaussian;
+        } else {
+            double v1, v2, s;
+            do {
+                v1 = 2 * nextDouble() - 1; // between -1 and 1
+                v2 = 2 * nextDouble() - 1; // between -1 and 1
+                s = v1 * v1 + v2 * v2;
+            } while (s >= 1 || s == 0);
+            double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s)/s);
+            nextNextGaussian = v2 * multiplier;
+            haveNextNextGaussian = true;
+            return v1 * multiplier;
+        }
+]]></programlisting>
+            Fellelhető ugyan egy apró eltérés a felcserélt if és else ágakban, de mivel <function>haveNextNextGaussian</function> 
+            alapértéke hamis, így az eredmény ugyanaz lesz.
         </para>
         <para>
-            Megoldás forrása:                
+            A C++ megvalósítás is nagyban hasonlít a Java verziójához, de mint azt már tudjuk, a Java szintaktikája 
+            a C++-tól vett át sok mindent
+            <programlisting language="c++"><![CDATA[
+#include "polargen.h"
+double
+PolarGen::kovetkezo ()
+{
+  if (nincsTarolt)
+    {
+      double u1, u2, v1, v2, w;
+      do
+	{
+	  u1 = std::rand () / (RAND_MAX + 1.0);
+	  u2 = std::rand () / (RAND_MAX + 1.0);
+	  v1 = 2 * u1 - 1;
+	  v2 = 2 * u2 - 1;
+	  w = v1 * v1 + v2 * v2;
+	}
+      while (w > 1);
+      double r = std::sqrt ((-2 * std::log (w)) / w);
+      tarolt = r * v2;
+      nincsTarolt = !nincsTarolt;
+      return r * v1;
+    }
+  else
+    {
+      nincsTarolt = !nincsTarolt;
+      return tarolt;
+    }
+}
+]]></programlisting>
+            <programlisting language="c++"><![CDATA[
+#include <iostream>
+#include "polargen.h"
+int
+main (int argc, char **argv)
+{
+  PolarGen pg;
+  for (int i = 0; i < 10; ++i)
+    std::cout << pg.kovetkezo () << std::endl;
+  return 0;
+}
+]]></programlisting>
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
-    </section>        
-
+    </section>
+    
     <section>
-        <title>Java osztályok a Pi-ben</title>
+        <title> „Gagyi” </title>
         <para>
-            Az előző feladat kódját fejleszd tovább: vizsgáld, hogy Vannak-e Java osztályok a Pi hexadecimális kifejtésében!
+            Az ismert formális
+            tesztkérdéstípusra adj a szokásosnál
+            (miszerint x, t az egyik esetben az objektum által hordozott érték, a másikban meg az objektum
+            referenciája) „mélyebb” választ, írj Java példaprogramot mely egyszer végtelen ciklus, más x, t
+            értékekkel meg nem! A példát építsd a JDK Integer.java forrására3
+            , hogy a 128-nál inkluzív objektum
+            példányokat poolozza!
         </para>
         <para>
-            Megoldás videó:
+            Vizsgáljuk meg a két alábbi kódcsipet eredményét.
+            <programlisting language="java"><![CDATA[
+public static void main (String[]args)
+{
+Integer x = 127;
+Integer t = 127;
+System.out.println (x);
+System.out.println (t);
+while (x <= t && x >= t && t != x);
+}
+]]></programlisting>
+            
+            <programlisting language="java"><![CDATA[
+public static void main (String[]args)
+{
+Integer x = 128;
+Integer t = 128;
+System.out.println (x);
+System.out.println (t);
+while (x <= t && x >= t && t != x);
+}
+]]></programlisting>
+            Egy olyan ciklust szeretnénk létrehozni, ahol két számnak egyszerre kell kisebbnek (és egyenlőnek), nagyobbnak (és egyenlőnek),
+            és nem egyenlőnek lenni. Ezt egy kis trükkel megtudjuk valósítani, ha ismerjük az <function>Integer</function> memóriafoglalási elvét.
+            Az első példában nem következik be végtelen ciklus, mivel nem teljesültek a feltételek. 
+            Ellemben a második példában végtelen ciklusba torkollik a program, mert teljesül minden feltétel. 
         </para>
         <para>
-            Megoldás forrása:                
+            De hogyan teljesülhet egyszerre mind a három feltétel? A válasz abban rejlik, hogy Java-ban az 
+            <function>Integer</function> osztályban 127-ig pool-olva vannak a pozitív egészek értékei, tehát ha
+            127 vagy attól kisebb értéket adunk az objektumank, akkor ugyanarra a memoriórészre hivatkozik.
+            Lényeges, hogy a != operátor nem az objektumok értékeit fogja összehasonlítani, hanem referenciákat.
+            Mivel a 128 már nem pool-olt érték, ezért különböző memóriacímmel fog rendelkezeni a két objektum.
+        </para>
+        </section>
+    <section>
+        <title> Yoda </title>
+        <para>
+            Írjunk olyan Java programot, ami java.lang.NullPointerEx-el leáll, ha nem követjük a Yoda
+            conditions-t!
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A Yoda condition tulajdonképpen annyi, hogy feltétel sorrendje megfordul, és a bal oladlon fog 
+            elhelyezkedni a konstans, jobb oldalra pedig a változó kerül. Használtaával elkerülthetőek olyan hibák, 
+            mint például az ertékadó operátor(=) használata az összehasonlító helyet(==).
         </para>
-    </section>        
+        <para>
+            <programlisting language="java">
+<![CDATA[
+String myString = null;
+if (myString.equals("foobar")) { /* ... */ }
+]]></programlisting>
+            Ezzel a kóddal NullPointerException-be ütközünk, mivel <function>null</function> értéket nem hasonlíthatunk 
+            konstashoz.
+        </para>
+        <para>
+            Nézzeük meg a Yoda conditions alakalmazásával:
+            <programlisting language="java">
+<![CDATA[
+String myString = null;
+if ("foobar".equals(myString)) { /* ... */ }
+]]></programlisting>
+            Így viszont lefut a kódunk, mivel string konstanst hasonlíthatunk <function>null</function> értékhez. Ebben
+            a példában hamis értéket ad a kifejezés, ahogy az várható.
+        </para>
+    </section>
+    
+    <section>
+        <title> Kódolás from scratch </title>
+        <para>
+            A BBP, azazBailey-Borwein-Plouffe algoritmus segíttségével a Pi hexadecimális számjegyeit tudjuk 
+            meghatározni.
+        </para>
+        <para>
+            Vessünk egy pillantást a kódra.
+            <programlisting language="Java"><![CDATA[
+public class PiBBP {
+    public PiBBP(int d) {
+        
+        double d16Pi = 0.0d;
+        
+        double d16S1t = d16Sj(d, 1);
+        double d16S4t = d16Sj(d, 4);
+        double d16S5t = d16Sj(d, 5);
+        double d16S6t = d16Sj(d, 6);
+        
+        d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+        
+        d16Pi = d16Pi - StrictMath.floor(d16Pi);
+        
+        StringBuffer sb = new StringBuffer();
+        
+        Character hexaJegyek[] = {'A', 'B', 'C', 'D', 'E', 'F'};
+        
+        while(d16Pi != 0.0d) {
+            
+            int jegy = (int)StrictMath.floor(16.0d*d16Pi);
+            
+            if(jegy<10)
+                sb.append(jegy);
+            else
+                sb.append(hexaJegyek[jegy-10]);
+            
+            d16Pi = (16.0d*d16Pi) - StrictMath.floor(16.0d*d16Pi);
+        }
+        
+        d16PiHexaJegyek = sb.toString();
+    }
+]]></programlisting>
+            Az algroritmus alapján a {16^d Pi} = {4*{16^d S1} - 2*{16^d S4} - {16^d S5} - {16^d S6}} kiszámolásával kezdi a program. A {} jelölés a  törtrész jelölésére szolgál. 
+            Mivel 16-os szsámrendszerben dolgozunk, és a Java nem tartalmaz hexa számjegyeket, így meg kell adnunk őket 
+            egy <function>hexaJegyek[]</function> tömbben.
+            <programlisting language="Java"><![CDATA[
+    public double d16Sj(int d, int j) {
+        
+        double d16Sj = 0.0d;
+        
+        for(int k=0; k<=d; ++k)
+            d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+        return d16Sj - StrictMath.floor(d16Sj);
+]]></programlisting>
+            Itt a {16^d Sj} részt számoljuk ki. A hexajegyek kiszámolása (d+1)-edik elemtől kezdődik.
+            <programlisting language="Java"><![CDATA[
+public long n16modk(int n, int k) {
+        
+        int t = 1;
+        while(t <= n)
+            t *= 2;
+        
+        long r = 1;
+        
+        while(true) {
+            
+            if(n >= t) {
+                r = (16*r) % k;
+                n = n - t;
+            }
+            
+            t = t/2;
+            
+            if(t < 1)
+                break;
+            
+            r = (r*r) % k;
+            
+        }
+        
+        return r;
+}]]></programlisting>
+            A 16^n mod k kiszámítása bináris hatványozással történik, ahol n a kitevő, k a modulus.
+            <programlisting language="Java"><![CDATA[
+public String toString() {
+        
+        return d16PiHexaJegyek;
+    }
+    
+    public static void main(String args[]) {        
+        System.out.print(new PiBBP(1000000));
+    }
+}]]></programlisting>
+            A <function>toString()</function> függvény a kiszámolt hexajegyek visszaadására szolgál. A <function>main</function>
+            függvényben példányosítunk egy PiBBP objektmot. Ebben a példában d=1000000, ezért 1000001. hexajegytől írjuk ki a Pi-t.
+        </para>
+        
+    </section>      
         
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                

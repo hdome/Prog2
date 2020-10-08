@@ -14,13 +14,15 @@
             </tip>    
         
     </partintro>
+    
     <xi:include href="bhax-textbook-feladatok-olvasos.xml">
         <xi:fallback>
             <para>
                 <emphasis>XInclude: bhax-textbook-motto.xml file not found</emphasis>
             </para>
         </xi:fallback>
-    </xi:include> 
+    </xi:include>
+    
     
     <xi:include href="bhax-textbook-feladatok2-arroway.xml">
         <xi:fallback>
@@ -28,7 +30,17 @@
                 <emphasis>XInclude: bhax-textbook-motto.xml file not found</emphasis>
             </para>
         </xi:fallback>
-    </xi:include>   
+    </xi:include>
+    
+    <xi:include href="bhax-textbook-feladatok2-liskov.xml">
+        <xi:fallback>
+            <para>
+                <emphasis>XInclude: bhax-textbook-motto.xml file not found</emphasis>
+            </para>
+        </xi:fallback>
+    </xi:include>
+    
+
   
     
     
