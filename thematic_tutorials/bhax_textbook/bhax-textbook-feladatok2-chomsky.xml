@@ -1,2 +1,366 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Chomsky!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    
+    
+    <section>
+        <title>Paszigráfia Rapszódia OpenGL full screen vizualizáció</title>
+        <para>
+            Lásd vis_prel_para.pdf! Apró módosításokat eszközölj benne, pl. színvilág, textúrázás, a szintek jobb
+            elkülönítése, kézreállóbb irányítás.
+        </para>
+        <para>
+            A Paszigráfia Rapszódia célja, hogy lehetővé tegye homonkulusz és mesterséges homunkulusz közti kommunikációt.
+            OpenGL segítségével valósul meg a vizualizáció. Szükségünk lesz <function>lib-boost</function> és <function>freeglut3</function> csomagokra.
+            Ezeket könnyedén letölthetjük az alábbi két paranccsal
+            <programlisting language="c++"><![CDATA[
+		sudo apt-get install libboost-all-dev
+		sudo apt-get install freeglut3-dev
+            ]]></programlisting>
+        </para>
+        <para>
+            Az a feladat, hogy miután felélesztettük a programot, apróbb változtatásokat is hajtsunk végre benne. A színek változtatásához a <function>glColor3f</function> függvényt kell módosítanunk.
+            <programlisting language="c++"><![CDATA[
+		glColor3f ( 0.0, 1.0f, 0.0f );
+            ]]></programlisting>
+            Ez például zöld színt eredményez. Ha más színt szeretnénk megadni, akkor néhány alapvető színt megtalálhatunk például <link xlink:href="https://pemavirtualhub.wordpress.com/2016/06/20/opengl-color-codes/">itt</link>.
+        </para>
+        <para>
+            <programlisting language="c++"><![CDATA[
+void skeyboard ( int key, int x, int y )
+{
+        if ( key == GLUT_KEY_UP ) {
+                cubeLetters[index].rotx -= 5.0;
+        } else if ( key == GLUT_KEY_DOWN ) {
+                cubeLetters[index].rotx += 5.0;
+            ]]></programlisting>
+            Ez pedig felcseréli a fel és le gombok funkcióját, tehát másik irányba fordulnak, mint eddig.
+        </para>
+        <para>
+            A program fordítása és futtatása:
+            <programlisting language="c++"><![CDATA[
+g++ para6.cpp -o para -lboost_system -lGL -lGLU -lglut
+./para 3:2:1:1:0:3:2:1:0:2:0:2:1:1:0:3:3:0:2:0:1:1:0:1:0:1:0:1:0:2:2:0:1:1:1:3:2:1:0:2:0:2:1:1:1:2:3:0:1:1:1:1:0:3:3:0:1:0:2:1:0:1:0:2:2:0:0:0:1:3:1:0:1:3:2:1:0:2:0:3:3:0:1:0:2:1:0
+            ]]></programlisting>
+        </para>
+    </section>
+    <section>
+        <title>
+            <emphasis role="cadiumgreen">Full screen</emphasis>
+        </title>
+        <para>
+            Készítsünk egy teljes képernyős Java programot!
+            Tipp: <link xlink:href="https://www.tankonyvtar.hu/en/tartalom/tkt/javat-tanitok-javat/ch03.html#labirintus_jatek">
+                https://www.tankonyvtar.hu/en/tartalom/tkt/javat-tanitok-javat
+                /ch03.html#labirintus_jatek</link>
+        </para>
+        <para>
+            Ebben a feladatban egy egyszerű kiírást fogunk kitenni teljes képernyőre. Néhány YouTube videó és kis böngészés után 
+            <link xlink:href="http://www.java2s.com/Code/JavaAPI/java.awt/GraphicsdrawStringStringstrintxinty.htm">ez</link> alapján készítettem el egy nagyon egyszerű változatot.
+        </para>
+        <para>
+            A végeredmény nem lett túl látványos, de a célnak megfelel:
+            <figure>
+                <title>Teljes Képernyő</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/fullscreen.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+        </para>
+        <para>
+            A programot a szükséges osztályok improtálásával kezdjük.
+            <programlisting language="java"><![CDATA[
+import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+]]></programlisting>
+        </para>
+        <para>
+            Létrehozzuk a <function>Teljes</function> osztályunkat a <function>Jpanel</function> leszármazottjaként.
+            <programlisting language="java"><![CDATA[
+public class Teljes extends JPanel {
+]]></programlisting>
+            A <function>paint</function> metódusban található <function>drawString</function> függvény lesz felelős kiírásért.
+            <programlisting language="java"><![CDATA[
+public void paint(Graphics g) {
+    g.drawString("Hello Fullscreen", 200, 200);
+  }
+]]></programlisting>
+        </para>
+        <para>
+            Elértünk a <function>main</function>-hez. Az elején példányosítunk egy <function>JFrame</function>-t. A többi sorba pedig magyarázó kommenteket tettem.
+            <programlisting language="java"><![CDATA[
+  public static void main(String[] args) {
+    JFrame frame = new JFrame("Teljes"); //Zárójelek közöt a programnév
+    frame.getContentPane().add(new Teljes());
+    frame.setExtendedState(JFrame.MAXIMIZED_BOTH); //Itt lesz teljes képernyős
+    frame.setUndecorated(true); //etávolítja a címsort
+    frame.setVisible(true);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Kilépéskor bezárja a progit  
+    }
+}
+]]></programlisting>
+        </para>
+    </section>
+    <section>
+        <title>
+            <emphasis role="cadiumgreen">l334d1c46</emphasis>
+        </title>
+        <para>
+            Írj olyan OO Java vagy C++ osztályt, amely leet cipherként működik, azaz megvalósítja ezt a betű
+            helyettesítést: <link xlink:href="https://simple.wikipedia.org/wiki/Leet">https://simple.wikipedia.org/wiki/Leet</link>
+            (Ha ez első részben nem tetted meg, akkor írasd
+            ki és magyarázd meg a használt struktúratömb memóriafoglalását!)
+        </para>
+        <para>
+            A leet nyelvvel már volt dolgunk korábban a Prog1-es könyv során. Lényege, hogy a betűket (vagy akár számokat is) kicseréljük hozáájuk hasonló karakterre vagy karakterláncra.
+            A feladatban látható Java forrás alapját <link xlink:href="https://codehackersblog.blogspot.com/2015/06/leet-speak-convertor-with-java-code.html">ez a kód</link> adta.
+            Ezen egy kicsit változtattam, mivel tartalmazott számunkra most lényegtelen részeket.
+        </para>
+        <para>
+            Itt is a szükséges könyvtárak improtálásával kezdtük.
+            <programlisting language="java"><![CDATA[
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+]]></programlisting>
+        </para>
+        <para>
+            Deklaráljuk a <function>toLeetCode</function> függvényt. Létrehozunk egy <function>Patter</function> típust, aminek az elfogadott szövegmintát adjuk meg értékül, ami jelen esetben kis- és nagybetűkből állhat.
+            A <function>StringBuilder</function> a végeredmény tárolására szolgál.
+            <programlisting language="java"><![CDATA[
+class L33tConvertor {
+ 
+    private String toLeetCode(String str) {
+        Pattern pattern = Pattern.compile("[^a-zA-Z]");
+        StringBuilder result = new StringBuilder();
+]]></programlisting>
+            Ezt követően egy <function>HashMap</function>-ot csinálunk, ami kulcs érték párok tárolására alkalmas. Ez fogja tárolni a helyettesítéseket, amiket megadunk.
+            <programlisting language="java"><![CDATA[
+ HashMap<Character, String> map = new HashMap<Character, String>();
+        map.put('A', "@");
+        map.put('B', "ß");
+        map.put('C', "©");
+        map.put('D', "đ");
+        map.put('E', "€");
+        map.put('F', "ƒ");
+        map.put('G', "6");
+        map.put('H', "#");
+        map.put('I', "!");
+        map.put('J', "¿");
+        map.put('K', "X");
+        map.put('L', "£");
+        map.put('M', "M");
+        map.put('N', "r");
+        map.put('O', "0");
+        map.put('P', "p");
+        map.put('Q', "0");
+        map.put('R', "®");
+        map.put('S', "$");
+        map.put('T', "7");
+        map.put('U', "µ");
+        map.put('V', "v");
+        map.put('W', "w");
+        map.put('X', "%");
+        map.put('Y', "¥");
+        map.put('Z', "z");
+]]></programlisting>
+            Maga az átalakítás egy <function>for</function> ciklusban valósul meg. Ez a ciklus bejárja a szöveget egyesével és nagybetűre alakítja őket, és megnézi, hogy van-e helyettesítése a vizsgált karakternek a mapunkban.
+            Ha nem talál helyettesítést, akkor visszaadja az adott karaktert, egyébként pedig a <function>map.get</function> visszaadja a leet változatot. Az végeredményt stringre konvertálva kapjuk vissza.
+            <programlisting language="java"><![CDATA[
+ for (int i = 0; i < str.length(); i++) {
+            char key = Character.toUpperCase(str.charAt(i));
+            Matcher matcher = pattern.matcher(Character.toString(key));
+            if (matcher.find()) {
+                result.append(key);
+                result.append(' ');
+            } else {
+                result.append(map.get(key));
+                result.append(' ');
+            }
+        }
+        return result.toString();
+]]></programlisting>
+        </para>
+        <para>
+            A <function>main</function> függvényben példányosítunk egy <function>L33tConvertor</function> osztályt. Egy BufferReader fog beolvasni a standard bementről. A <function>leetWord</function> tárolja az általunk beírt szöveget, és erre hívjuk meg a toLeetCode függvényt.
+            <programlisting language="java"><![CDATA[
+ public static void main(String[] args) throws IOException {
+        L33tConvertor obj = new L33tConvertor();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String leetWord;
+		
+		System.out.println("\nEnter the English Words :-");
+                    leetWord = br.readLine();
+                    String leet = obj.toLeetCode(leetWord);
+                    System.out.println("The 1337 Code is :- " + leet);
+					
+	}
+]]></programlisting>
+        </para>
+    </section>
+    <section>
+        <title>EPAM: Bináris keresés és Buborék rendezés implementálása</title>
+        <para>
+            Implementálj egy Java osztályt, amely képes egy előre definiált n darab Integer tárolására. Ennek az osztálynak az alábbi funkcionalitásokkal kell rendelkeznie:
+        </para><para>- Elem hozzáadása a tárolt elemekhez
+        </para><para>- Egy tetszőleges Integer értékről tudja eldönteni, hogy már tároljuk-e (ehhez egy bináris keresőt implementálj)
+        </para><para>- A tárolt elemeket az osztályunk be tudja rendezni és a rendezett (pl növekvő sorrend) struktúrávalvissza tud térni (ehhez egy buborék rendezőt implementálj)
+        </para>
+        <para>
+        Mivel halmazokkal fogunk foglalkozni, fontos, hogy importáljuk is azt: <function>java.util.Arrays</function>. Majd vegyük fel a 
+        "főosztályt" <function>IntegerCollection</function>, ahol lesz maga a halmazunk, egy index (mely utal majd a halmaz i-edik elemeire), 
+        egy logikai változós sorted (hogy tudjuk rendezve vannak-e már a számok), és kell egy size is ,ami a halmaz számosságát adja vissza.
+            <programlisting language="java"><![CDATA[
+package com.epam.training;
+
+import java.util.Arrays;
+
+public class IntegerCollection {
+
+	int[] array;
+	int index = 0;
+	int size;
+	boolean sorted = true;
+
+	public IntegerCollection(int size) {
+		this.size = size;
+		this.array = new int[size];
+	}
+
+	public IntegerCollection(int[] array) {
+		this.size = array.length;
+		this.index = this.size;
+		this.array = array;
+		this.sorted = false;
+	}
+]]></programlisting>
+           A következő rész felel az új elem felvételéért, ahol először megnézzük, hogy nem-e haladtuk meg a halmaz méretét. Amennyiben igen
+           úgy errort dob a progi <function>The collection is full</function>, de ha nem ütközünk semmilyen problémába, úgy jöhet az új elem,
+            de ekkor már a rendezést hamisra kell állítsuk.
+<programlisting language="java"><![CDATA[
+	public void add(int value) {
+		if (size <= index) {
+			throw new IllegalArgumentException("The collection is full");
+		}
+		sorted = false;
+		array[index++] = value;
+	}
+
+]]></programlisting>
+A második kritérium szerint el kell tudni döntenie, hogy a felvett érték szerepel-e már a kis halmazunkban. Tehát a <function>contains</function>
+osztály pontosan ezt fogja tenni. Végig megy az elemeken és egyesével összehasonlít. A végén pedig hamis értéket ad vissza.
+            <programlisting language="java"><![CDATA[
+
+	public boolean contains(int value) {
+		if (!sorted) {
+			sort();
+		}
+
+		int left = 0, right = size - 1;
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+
+			if (array[mid] == value) {
+				return true;
+			}
+
+			if (array[mid] < value) {
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+
+		return false;
+	}
+
+]]></programlisting>
+Végül pedig a rendzés. Itt a két egymásba ágyazott for ciklus az egymás mellett álló elemeket nézi meg, és rendezi őket növekvő sorrendbe.
+<programlisting language="java"><![CDATA[
+
+	public int[] sort() {
+		for (int i = 0; i < size - 1; i++) {
+			for (int j = 0; j < size - i - 1; j++) {
+				if (array[j] > array[j + 1]) {
+					int temp = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = temp;
+				}
+			}
+		}
+		sorted = true;
+		return array;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(array);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof IntegerCollection)) {
+			return false;
+		}
+		IntegerCollection other = (IntegerCollection) obj;
+		return Arrays.equals(array, other.array);
+	}
+
+	@Override
+	public String toString() {
+		return "IntegerCollection [array=" + Arrays.toString(array) + "]";
+	}
+
+}
+]]></programlisting>
+        </para>
+        
+        <para>
+            A kiíratás és értéfelvétel a mian.java-ban történik, ahol először felvesszük az <function>IntegerCollection</function> elemeit és tároljuk őket.
+            Majd a felvehető elemeket. Végül kiíratjuk őket tárolt és növekvő sorrendben, illetve a felvett elemeket:
+<programlisting language="java"><![CDATA[
+package com.epam.training;
+
+public class Main {
+
+	public static void main(String[] args) {
+		IntegerCollection collection = new IntegerCollection(3);
+		collection.add(0);
+		collection.add(2);
+		collection.add(1);
+		System.out.println(collection);
+		collection.sort();
+		System.out.println(collection);
+		System.out.println(collection.contains(0));
+		System.out.println(collection.contains(1));
+		System.out.println(collection.contains(2));
+		System.out.println(collection.contains(3));
+		System.out.println(collection.contains(4));
+	}
+
+}
+
+]]></programlisting>
+        </para>
+
+
+    </section>
+</chapter>
 

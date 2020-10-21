@@ -184,7 +184,7 @@ private:
 ]]></programlisting>
         </para>
         <para>
-            Ahogy azt láthatjuk, az UML diagramoknak nayg hasznát vehetjük már tervezési fázisban is.
+            Ahogy azt láthatjuk, az UML diagramoknak nagy hasznát vehetjük már tervezési fázisban is.
             A kapott kód jól szemlélteti a program szerkezeti feképítését.
         </para>
     </section>
@@ -195,16 +195,13 @@ private:
             A BME-s C++ tankönyv 14. fejezetét (427-444 elmélet, 445-469 az esettan) dolgozzuk fel!
         </para>
         <para>
-            Felhasznált forrás: <link xlink:href="https://github.com/kovacsferencz98/Prog2/tree/master/Harmadik_het/Esettan">Kovács Ferencz</link>
-        </para>
-        <para>
             Ennek a feladatnak is szerves részét képzik az UML diagaramok, ezért ismerkedjünk meg az alapvető dolgokkal az előzőekben látottak alapján. 
             UML-ben téglalpokkal ábrázoljuk az osztályokat. Ezeket három részre bonthatjuk tovább. Fentről lefelé az első rész az osztály neve, majd ezt követik annak attribútumai, és végül a változókat láthatjuk.
             Függvények és változók előtt találhatók a láthatóságot jelölő '+'(public), '-'(privát) és '#'(védett).
         </para>
         <para>
-            Az esettanulmány a következő. Adott egy számítógep-alkatrész ás számítógep-konfiguráció értékesítésével foglalkozó kereskedés. El kell készíteni egy olyan programot, 
-            amellyel mevvalósítjató a kereskedés alkatrészeinek és konfigurációinak a nyílvántartása. A szofvernek támogatnia kell a termékek állományból való betöltést, képernyőre kiírását, az állományba kiírását és a rugalmas árképzést.
+            Az esettanulmány a következő. Adott egy számítógep-alkatrész és számítógep-konfiguráció értékesítésével foglalkozó kereskedés. El kell készíteni egy olyan programot, 
+            amellyel megvalósítható a kereskedés alkatrészeinek és konfigurációinak a nyílvántartása. A szofvernek támogatnia kell a termékek állományból való betöltést, képernyőre kiírását, az állományba kiírását és a rugalmas árképzést.
         </para>
         <para>
             Először is egy keretrendszer kialakítására van szükség osztálykönyvtárok által, ami alapszinten támogatja a termékcsaládokat. Majd erre a keretre 
@@ -216,23 +213,16 @@ private:
             A típusnév és típuskód a <function>Product</function> osztályban virtuális függvényként definiáljuk, mivel ezeknek a leszármazott osztályokban egyediek.
         </para>
         <para>
-            Az összetett termékek -például a számítógep-konfigurációk- kezelése a <function>CompositeProduct</function> osztályban valósul meg, amit szintén a <function>Product</function>-ból származtatunk.
+            Az összetett termékek (például a számítógep-konfigurációk) kezelése a <function>CompositeProduct</function> osztályban valósul meg, amit szintén a <function>Product</function>-ból származtatunk.
             Vektorban fogjuk tárolni az alkatrészeket, amit az <function>AddPart</function> metódus segítségével bővíthetünk. 
         </para>
         <para>
             A termékek nyilvántartására létrehozzuk a <function>ProductInventory</function> osztályt. Arra szolgál, hogy betöltse a termékek listáját, a betöltött termékeklistákat tárolja a memóriában, a memóriából adatfolyamba írás és a formázások megjelenítése. A lista bővítésére az <function>AddProduct</function> szolgál.
         </para>
         <para>
-            Mivel a keretrendszer osztálykönvtár, ezért az általlunk bevezetett termékosztályokat nem ismeri, így szülséégünk van egy soztályra, amivel kiküszöbölhető ez a probléma.
+            Mivel a keretrendszer osztálykönvtár, ezért az általunk bevezetett termékosztályokat nem ismeri, így szükségünk van egy osztályra, amivel kiküszöbölhető ez a probléma.
             A megoldást számunkra egy <function>ProducFactoryt</function> osztály lesz. Ebben lesz egy<function>ReadAndCreateProduct</function> függvénye, amit a  keretben definiálunk, de az általa meghívott <function>CreateProduct</function> függvény már virtuális.
-            <figure>
-                <title>Futtatás után</title>
-                <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="img/esettan.png" format="PNG"/>
-                    </imageobject>
-                </mediaobject>
-            </figure>
+            
         </para>
     </section>
     
@@ -255,7 +245,7 @@ private:
                 <title>BPMN</title>
                 <mediaobject>
                     <imageobject>
-                        <imagedata fileref="img/bpmn.png" format="PNG"/>
+                        <imagedata  fileref="img/bpmn.png" format="PNG"/>
                     </imageobject>
                 </mediaobject>
             </figure>
