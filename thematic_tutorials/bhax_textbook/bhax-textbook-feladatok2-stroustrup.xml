@@ -1,2 +1,330 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Stroustup!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
 
+<section>
+ <title>JDK osztályok</title>
+        <para>
+            Írjunk olyan Boost C++ programot (indulj ki például a fénykardból) amely kilistázza a JDK összes
+            osztályát (miután kicsomagoltuk az src.zip állományt, arra ráengedve)!
+        </para>
+<para>
+A feladatunk az lesz, hogy kilistázzuk a JDK osztályokat. Ehhez kicsomagolt src állományra lesz szükségünk. 
+Erre az src-re ráengedünk egy programot, ami bejárja az állományt és kiírja a .java kiterjesztésű fájlokat. A feladat alapjául egy fénykard nevezetű program 
+fog szolgálni. Ennek a programnak a <function>read_acts</function> metódusa megkereste a .props fájlokat. Mi is ebből indulunk ki.
+</para><para>
+Szükségünk lesz a boost könyvtárra, így mindenekelőtt telepítsük.
+ <programlisting>
+                    sudo apt-get install libboost-all-dev
+</programlisting>
+</para>
+<para>
+A programot a szükséges könyvtárak inkludálásával kezdjük, mint mindig.
+<programlisting><![CDATA[
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+]]></programlisting>
+</para>
+<para>
+<programlisting language="c++"><![CDATA[
+using namespace std;
+void read_classes ( boost::filesystem::path path, vector<string> & classes )
+{
+        if ( is_regular_file ( path ) )
+        {3999
+                string ext ( ".java" );
+                if ( !ext.compare ( boost::filesystem::extension ( path ) ) )
+                {
+                        classes.push_back(path.string());
+                }
+        }
+        else if ( is_directory ( path ) )
+            for ( boost::filesystem::directory_entry & entry : boost::filesystem::directory_iterator ( path ) )
+                read_classes ( entry.path(), classes );
+}
+]]></programlisting>
+Az eljárárs ami most a <function>read_classes</function> nevet kapta, a fénykarban található <function>read_acts</function> módosított változata.
+Az if ágat módosítottuk, mint az látható. A függvény egyébként anniyt csinál, hogy megnézi a paraméterül kapott útvonal egy fájl-e. Ha egy egyszerű fájl és .java 
+a kiterjesztése, akkor pusholjuk az osztályokat tartalmazó vektorunkba. Ha a kapott útvonal egy mappa, akkor ismét meghívjuk rá a <function>read_classes</function>-t. Ezzel a módszerrel az egész könyvtárt bejárhatjuk rekurzívan, akárhány alkönyvtár is legyen benne.
+</para>
+<para>
+<programlisting language="c++"><![CDATA[
+vector<string> getClass (string path)
+{
+    vector <string> classes;
+    boost::filesystem::path root (path);
+    
+    read_classes(root, classes);
+    
+    return classes;
+}
+int main(int argc, char const * argv[])
+{
+    boost::filesystem::path full_path(boost::filesystem::current_path());
+    string root = full_path.string() + "/" + "src";
+	
+    vector<string> classes = getClass ( root );
+    
+    for(const auto & i : classes)
+    {
+        cout << i << endl;
+    }
+	
+    cout << classes.size();
+	
+    return 0;
+}
+]]></programlisting>
+</para>
+</section>
+
+<section>
+ <title>Másoló-mozgató szemantika</title>
+        <para>
+            Kódcsipeteken (copy és move ctor és assign) keresztül vesd össze a C++11 másoló és a mozgató
+            szemantikáját, a mozgató konstruktort alapozd a mozgató értékadásra!
+        </para>
+<para>
+Konstruktorról van szó, ezért a neve ugyanaz, mint az osztály neve.
+<programlisting language="c++"><![CDATA[
+LZWBinFa::LZWBinFa (const LZWBinFa & forras){
+std::cout << "Copy ctor" << std::endl;
+gyoker = new Csomopont('/');
+gyoker->ujEgyesGyermek(masol(forras.gyoker->egyesGyermek(), forras.fa));
+gyoker->ujNullasGyermek(masol(forras.gyoker->nullasGyermek(), forras.fa));
+if (forras.fa == forras.gyoker){
+fa = gyoker;
+}
+}
+]]></programlisting>
+Látható, hogy a konstruktor az LZWBinFa konstans referenciáját várja paraméterül. Ilyenkor nem hívódik meg az alap konstruktor, ezért 
+a <function>gyoker</function> mutatónak értéket kell adni. Ezután létrehozzuk a gyermekeket a <function>ujNullasGyermek</function> 
+és a <function>ujEgyesGyermek</function> függvények felhasználásával a gyökkértől indulva. A <function>masol</function> függvénynek két paramétert kell megadni: a forrás gyökerének gyermeke és a famutatót.
+</para>
+<para>
+<programlisting language="c++"><![CDATA[
+Csomopont* LZWBinFa::masol (Csomopont* elem, Csomopont* regi_fa){
+Csomopont* ujelem = nullptr;
+                
+if (elem != nullptr){
+ujelem = new Csomopont (elem->getBetu());
+                
+ujelem -> ujEgyesGyermek(masol(elem->egyesGyermek(), regi_fa));
+ujelem -> ujNullasGyermek(masol(elem->nullasGyermek(), regi_fa));
+                
+if (regi_fa == elem){
+fa = ujelem;
+}
+}
+                
+return ujelem;
+}]]></programlisting>
+A <function>masol</function> egy <function>Csomopont</function> pointert ad vissza. A későbbiekben átadni kívánt csomópont létrehozása az 
+első. Utána megnézzük, hogy az erdeti fa csomópontja nullpointer-e. Ha nem, akkor az <function>ujelem</function> az eredeti csomóponthoz tartozó memóriacímet.
+Ezután újra meghívjuk a függvényt, hogy az <function>ujelem</function> gyermekeit is létrehozzuk. Ez folytatódik, amíg a fe végére nem érünk. Ha a régo fához tartozó mutató a <function>masol</function>-nak átadott elemre mutat, akkor az 
+új fának a mutatóját ez elem alapján létrehozott csomópontra állítjuk be.
+</para>
+<para>
+Ez volt a másoló konstruktor. Nézzük meg a másoló értékadást aminek alapja szintén a <function>masol</function>.
+<programlisting language="c++"><![CDATA[
+LZWBinFa & LZWBinFa::operator= (const LZWBinFa & forras){                
+gyoker->ujEgyesGyermek(masol(forras.gyoker->egyesGyermek(), forras.fa));
+gyoker->ujNullasGyermek(masol(forras.gyoker->nullasGyermek(), forras.fa));
+                
+if (forras.fa == forras.gyoker){
+fa = gyoker;
+}
+return *this;
+}]]></programlisting>
+Ami elsőnek szemet szúrhat az az, hogy ennek van visszatérési értéke a konsktruktorral szemben. A visszatérési érték egy LZWBinFa referencia.
+Visszaadunk egy mutatót az egyenlőségjel bal oldalán szereplő objektumról.
+</para>
+<para>
+A mozgató konstruktor paraméterül jobbérték referenciát kap, ezt jelzi a dupla and jel.
+<programlisting language="c++"><![CDATA[
+LZWBinFa::LZWBinFa (LZWBinFa&& forras)
+{
+gyoker = nullptr;
+*this = std::move(forras); //ezzel kényszerítjük ki, hogy a mozgató értékadást használja
+}
+]]></programlisting>
+Lényegében felcseréljük a két fa gyökérmutatójának értékét, ezért az új fának gyökeréből nullpointert csinálunk és meghívjuk a mozgató értékadást. 
+Ezt az <function>std::move</function> függvénnyel tesszük. A this egy inicializált objektumot jelöl, így nem a mozgató konstruktor, hanem azz értékadás hívódik meg.
+</para>
+<para>
+ <programlisting language="c++"><![CDATA[
+LZWBinFa& LZWBinFa::operator= (LZWBinFa&& forras)
+{
+std::cout<<"Move assignment ctor\n";
+std::swap(gyoker, forras.gyoker);
+return *this;
+}
+]]>
+</programlisting>
+Az értékek cseréjét az <function>std::swap</function> végzi el. Ezzel teljes a mozgatás. Mivel az új fa mutatója nullpointer volt, az eredeti fáé is az lett.
+</para>
+</section>
+
+<section>
+ <title>Változó argumentumszámú ctor</title>
+        <para>
+            Készítsünk olyan példát, amely egy képet tesz az alábbi projekt Perceptron osztályának bemenetére
+            és a Perceptron ne egy értéket, hanem egy ugyanakkora méretű „képet” adjon vissza. (Lásd még a 4
+            hét/Perceptron osztály feladatot is.)
+        </para>
+<para>
+A feladat során megismerjük, hogy készíthető változó argumentumszámú konstruktor. C++-ban a ...-tal jelöljük, hogy bármennyi paramétere lehet a konstruktornak. 
+Az összes paraméter eléréséhez a <function>cstdarg</function> headerre van szükségünk. Nézzük a konstruktort
+<programlisting language="c++"><![CDATA[
+Perceptron ( int nof, ... )
+{
+n_layers = nof;
+            
+units = new double*[n_layers];
+n_units = new int[n_layers];
+            
+ va_list vap;
+            
+va_start ( vap, nof );
+            
+for ( int i {0}; i < n_layers; ++i )
+{
+n_units[i] = va_arg ( vap, int );
+            
+if ( i )
+units[i] = new double [n_units[i]];
+}
+            
+ va_end ( vap );
+                       
+...
+]]></programlisting>
+A <function>Perceptron</function> osztály osztály konstruktorában található a <function>nof</function> nevű paraméter.
+A maradék paraméter eléréséhez pedig a <function>va_list vap</function>-ot deklaráljuk, ebben a változó paramétereket tároljuk.
+Értékét a <function>va_start</function> inicializálja. A <function>nof</function> azt fogja számon tartani.hogy hány paramétert adtunk meg. 
+Ennek paraméterül meg kell adni egy <function>va_list</function>-et, amelybe betölti az argumentumokat és egy argumentumot, ahonnan a betöltés kezdődjön.
+A <function>va_arg</function> azt aktuális paramétert adja vissza nekünk. Minden meghívásra modosítja a <function>vap</function>-ot úgy, hogy a már visszaadott értéket követő értéket adja vissza. Ez hasznos lesz a paraméter lista bejárársánál.
+A <function>va_end</function> után nem tudjuk hazsnálni többet az argumentum listát.
+</para>
+<para>
+Kisebb modoosításokat hajtunk végre a <function>Perceptron</function> osztályon. A feladat szerint nem értéket fog vosszaadni, hanem egy vektort, aminek a mérete a bemeneti képtől függ. Majd manipuláljuk az eredeti kéépet és egy <function>output.png</function>-be elmentjük.
+</para>
+<para>
+Példányosításnál az utolsó paraméter <function>size</function> lesz 1 helyett.
+<programlisting language="c++">
+                Perceptron* p = new Perceptron (3, size, 256, size);
+            </programlisting>
+</para>
+<para>
+Ezután meg kell oldani az osztályon belül az előbbi változás kezelését.
+<programlisting><![CDATA[
+std::vector< double > operator() ( double image [] )
+{
+std::cout << "std" << std::endl;
+units[0] = image;
+for ( int i {1}; i < n_layers; ++i )
+{
+#ifdef CUDA_PRCPS
+cuda_layer ( i, n_units, units, weights );
+#else
+#pragma omp parallel for
+for ( int j = 0; j < n_units[i]; ++j )
+{
+units[i][j] = 0.0;
+for ( int k = 0; k < n_units[i-1]; ++k )
+{
+units[i][j] += weights[i-1][j][k] * units[i-1][k];
+}
+units[i][j] = sigmoid ( units[i][j] );
+}
+#endif
+}
+std::vector< double > result_vector;
+            
+for (int i = 0; i < units[n_layers - 1]; ++i){
+result_vector.push_back(sigmoid( units[n_layers - 1][i]));
+}
+ return result_vector;
+}
+]]>
+ </programlisting>
+</para>
+<para>
+Az <function>operator()</function> túlterhelés során egy vektort hozunk létre, később ezt adjuk vissza. A <function>result_vector</function>-ba pusholjuk a <function>sigmoid</function> függvény által kiszámolt értékeket. A vektor értékei alapján módosítjuk az eredeti kép pixelehez rendelt zöld értéket. Végül létrehozzuk a képünket a <function>write</function> segítségével.
+            <programlisting language="c++"><![CDATA[
+                        ...
+						
+						
+std::vector< double > value = (*p) (image);
+for (int i = 0; i<png_image.get_width(); ++i)
+for (int j = 0; j<png_image.get_height(); ++j){
+png_image[i][j].green = value[i*png_image.get_width() + j];
+            
+}
+            
+png_image.write("output.png");
+            
+			
+			
+...]]></programlisting>
+</para>
+</section>
+
+<section>
+ <title>Összefoglaló</title>
+        <para>
+            Az előző 4 feladat egyikéről írj egy 1 oldalas bemutató „esszé" szöveget!
+        </para>
+<para>
+A másoló és a mozgató konstruktor.
+</para>
+<para>
+Amikor egy osztályt példányosítunk C++-ban a konstruktor hívódik meg. Ha nincs definiálva konstruktor, akkor 
+a forddító az alapértelmezettet fogja hazsnálni. A konstruktorok feladata a az objektum inicializálása, azaz 
+itt adunk az egyes tagváltzóknak értéket, tagfüggvényeket hívni.
+Már megfigylehetüük, hogy a konstruktorok nevei megegyeznek az osztályok neveivel. Ennek párja a destruktor, 
+ami az objektum törlésénél hívódik meg, és felszabadítja a már nem használt memóriaterületet. Azonban ezen a 
+kettőn kívül szükségünk van másoló ás mozgató konstruktorokra is.
+</para>
+<para>
+Az utólag említett két  konstruktor segítségével ugyancsak az objektum inicializálását valósíthatjuk meg, de 
+egy másik azonos osztályú objektum alapján. Ha nem írunk másoló/mozgató konstruktort, akkor a fordító az 
+alapértelmezettet fogja meghívni, ez viszont váratlan próblámákhoz vezethetnek.
+</para>
+<para>
+A másoló konstruktor, ahogy a neve is mutatja, objektumot másol le, és az alapján készít egy másikat. 
+Paraméterként egy őt tartalmazó osztállyal azonos osztályú objektumreferenciát vár. Két fajta másolásról 
+beszélhetünk: sekélyről és mélyről. A sekély másolás annyit takar, hogy a paraméterként megadott objektumra 
+csak egy másik mutatót hozunk létre. Ebből adódóan nagy hátránya, hogy ugyanaz a memóriaterület, tehát ha az 
+egyiket módósítjuk, akkor az hatással van a másikra is.
+A mély másolás viszont már egy különálló objektumot hoz létre, amely úgyanúgy megegyezik a paraméterül kapott elmmel, de különbözik a memóriacímük.
+</para>
+
+<para>
+A mozgató konstruktor a többi konstruktorhoz hasonlóan inicializálást hajt végre, és itt is egy másik 
+objektum az alapja. Amíg másolásnál az érintett objektumok megmaradnak, addig mozgatásnál az eredeti objektum
+ eltűnik. A mozgató konstruktor ismertető jegye, hogy jobbérték referenciát vár paraméterül(dupla and jel) ahogy már írtam korábban).
+Hogy ez hívódjon meg,a <function>std::move</function> függvényt kell meghívnunk. ez valójában a kapott objektum jobbérték referenciájával tér vissza.
+</para>
+<para>
+Az LZWBinFa programban a mozgató konstruktor a mozgató értékadásra van alapozva. Az alap elgondolás az, hogy 
+létrehozni kívánt fa gyökerét nullpointer-ré tesszük, majd megcseréljük a forrás- és célfa mutatóját, ezzel
+ valósítva meg a mozgatást. Fontos, hogy mikor hívódik meg konstruktor és mikor za értékadás. Ha még nem inicializált
+ objektumot szeretnénk másolással vagy mozgatással létrehozni, akkor a konstruktor hívódik meg. Azonban ha 
+ már inicializált objekktumba szretnénk értéket mozgatni/másolni, abban az esetben már értékadás megy végbe.
+Ennek tudatában szerepel a mozgató kontruktorban az alábbi sor:
+            <programlisting language="c++">
+                *this = std::move(forras);
+            </programlisting>
+Meghívódik a mozgató értékadás, ahol a mutatók értékének cseréjét hajtjuk végre.
+</para>
+</section>
+</chapter>

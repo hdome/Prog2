@@ -1,0 +1,263 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gödel!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    
+    <section>
+        <title>Gengszterek</title>
+        <para>
+            Gengszterek rendezése lambdával a Robotautó Világbajnokságban
+        </para>
+        <para>
+            <link xlink:href="https://youtu.be/DL6iQwPx1Yw">https://youtu.be/DL6iQwPx1Yw(8:05-től)</link>
+        </para>
+        <para>
+            <programlisting language="c++"><![CDATA[
+            std::sort ( gangsters.begin(), gangsters.end(), [this, cop] ( Gangster x, Gangster y )
+            {
+                return dst ( cop, x.to ) < dst ( cop, y.to );
+            } );
+		]]></programlisting>
+            Ahogy látható, a <function>sort</function> függvény három paraméterrel rendelkezik. Az első két paraméter azt adja meg, hogy mettől meddig menjen a függvény. Ebben az esetben
+            a <function>gangsters</function> nevű vektor elejétől fog menni a végéig, amit a <function>begin()</function> és <function>end()</function> függvények segítségével adunk meg.
+            A harmadik paraméter egy függvény ami a rendezés alapjául fog szolgálni. Ez egy név nélküli, úgynevezett lambda függvény.
+        </para>
+        <para>
+            A []-ből tujduk, hogy egy lambda kifejezésről van szó, a kódcsipetben ez tartalmaz egy mutatót az aktuális objektumra és a cop nevű objektumot.
+            A kerek zárójelek között két <function>Gangster</function> osztályú objektumot találunk paraméterként. Ez a két paraméter kerül majd összehasonlításra.
+            A függvény törzsében pedig egy logikai típusú változóval térünk vissza, az alapján, hogy melyik objektum van közelebb a rendőrhöz.
+        </para>
+        <para>
+            A <function>sort</function> tehát az eredeményezi végső soron, hogy a gengszterek rendezve lesznek rendőrtől való távolságuk szerint növekvő sorrendben.
+        </para>
+    </section>
+    
+    <section>
+        <title>STL map érték szerinti rendezése</title>
+        <para>
+            Például: <link xlink:href="https://github.com/nbatfai/future/blob/master/cs/F9F2/fenykard.cpp#L180">https://github.com/nbatfai/future/blob/master/cs/F9F2/fenykard.cpp#L180</link>
+        </para>
+        <para>
+            A <function>map</function> kulcs és érték párokat tárolnak és alapból a kulcs szerint növekvően van rendezve.
+            <programlisting language="c++"><![CDATA[
+std::vector<std::pair<std::string, int>> sort_map ( std::map <std::string, int> &rank )
+        {
+                std::vector<std::pair<std::string, int>> ordered;
+        
+                for ( auto & i : rank ) {
+                        if ( i.second ) {
+                                std::pair<std::string, int> p {i.first, i.second};
+                                ordered.push_back ( p );
+                        }
+                }
+        
+                std::sort (
+                        std::begin ( ordered ), std::end ( ordered ),
+                [ = ] ( auto && p1, auto && p2 ) {
+                        return p1.second > p2.second;
+                }
+                );
+        
+                return ordered;
+        }]]></programlisting>
+            A tárolt párokat egy <function>pair</function> vektorhoz rendeljük, majd rendezzük őket. A <function>pair</function> lehetővé teszi, az értékek párban való tárolását.
+            A korábban már megismert lambda kifejezés lesz segítségünkre a rendezés során. Az értékek alapján csökkenő sorrendbe rendezzük át a vektort.
+            Amivel eddig még nem találkoztunk, az az <function>auto</function> típus, ami arra szolgál, hogy a fordító automatikusan megtalálja a megfelelő típust egy adott változóhoz.
+        </para>
+    </section>
+    
+    <section>
+        <title>Alternatív Tabella rendezése</title>
+        <para>
+            Mutassuk be a <link xlink:href="https://progpater.blog.hu/2011/03/11/alternativ_tabella">https://progpater.blog.hu/2011/03/11/alternativ_tabella</link> a programban a java.lang
+            Interface <![CDATA[Comparable<T>]]> szerepét!
+        </para>
+        <para>
+            Az Alternatív Tabella a magyar labdarúgó bajnokság alternatív rangsorát tárolja. Nem csak azt 
+            vizsgálja, hogy nyert, veszetett vagy döntetlent játszott-e egy csapat, hanem azt is , hogy ki 
+            ellen. Ez segít egy hitelesebb kép kialakításában.
+        </para>
+        <para>
+            A csapatok kezeléséhez a <function>Csapat</function> osztály feladata, amely a 
+            <function>Comparable</function> interfészt implementálja.
+            A kód legvégén található a kis kódcsipetünk.
+            <programlisting language="java"><![CDATA[
+                class Csapat implements Comparable<Csapat> {
+                    protected String nev;
+                    protected double ertek;
+                  
+                    public Csapat(String nev, double ertek) {
+                      this.nev = nev;
+                      this.ertek = ertek;
+                    }
+                  
+                    public int compareTo(Csapat csapat) {
+                      if (this.ertek < csapat.ertek) {
+                        return -1;
+                      } else if (this.ertek > csapat.ertek) {
+                        return 1;
+                      } else {
+                        return 0;
+                      }
+                    }
+        }]]></programlisting>
+        </para>
+        <para>
+            Látunk benne egy <function>Csapat</function> nevű objektumot, aminek van egy neve és egy értéke. A 
+            <function>Comparable</function> interfészből adódóan definiáljuk a <function>compareTo</function>
+            függvényt, aminek segítségével meg tudjuk határozni, hogyan hasonlítsa össze a két objektumot a 
+            program. A paraméterként megadott objektumokat hasonlítja össze a függvény. Visszatérési értéke lehet -1, 1 vagy 0.
+        </para>
+    </section>
+    
+    <section>
+        <title>GIMP Scheme hack</title>
+        <para>
+            Ha az előző félévben nem dolgoztad fel a témát (például a mandalás vagy a króm szöveges
+            dobozosat) akkor itt az alkalom! Forrás: <link xlink:href="https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/GIMP_Lisp/Mandala/bhax_mandala9.scm">Link</link>
+        </para>
+        <para>
+            Ezt a feladatot GIMP-ben fogjuk elkészíteni a Scheme nyelv használatával.
+        </para>
+        <para>
+            Először is helyezzük el a fájlt a GIMP 2\share\gimp\2.0\scripts mappában, így a továbbiakban annyi a dolgunk, hogy a Fájl>Létrehozás menüpontban kiválasztjuk a scriptünket.
+            Az alakzatot adó szöveg "Hankóczki Döme" lesz, és középen pedig "Döme" fog elhelyezkedni. A szélesség, magasság, betűtípus, szín és színátmenet állítható akár kódon belül akár grafikus felületen.
+            <programlisting><![CDATA[
+(script-fu-register "script-fu-bhax-mandala"
+    "Mandala9"
+    "Creates a mandala from a text box."
+    "Norbert Bátfai"
+    "Copyright 2019, Norbert Bátfai"
+    "January 9, 2019"
+    ""
+    SF-STRING       "Text"      "Hankóczki Döme"
+    SF-STRING       "Text2"     "Döme"
+    SF-FONT         "Font"      "Sans"
+    SF-ADJUSTMENT   "Font size" '(100 1 1000 1 10 0 1)
+    SF-VALUE        "Width"     "1000"
+    SF-VALUE        "Height"    "1000"
+    SF-COLOR        "Color"     '(86 252 20)
+    SF-GRADIENT     "Gradient"  "Deep Sea"
+)
+(script-fu-menu-register "script-fu-bhax-mandala" 
+    "<Image>/File/Create/BHAX"
+)]]>
+</programlisting>
+            <figure>
+                <title>beállítás</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/mandala1.png" format="PNG" scale="100"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+        </para>
+        <para>
+            A kép több rétegből épül fel, amit a gimp-image-insert eljárás alakít ki. A legalsó réteg, ami a bg, sima RGB-ben megadott zöld színt kapott.
+            <programlisting><![CDATA[
+(gimp-image-insert-layer image layer 0 0)
+(gimp-context-set-foreground '(0 255 0))
+(gimp-drawable-fill layer FILL-FOREGROUND)
+(gimp-image-undo-disable image) 
+(gimp-context-set-foreground color)]]>
+            </programlisting>
+        </para>
+        <para>
+            A gimp-layer-set-offsets használatával módosítjuk a szöveg magasságát és szélességet,
+            majd a gimp-layer-resize-to-image-size segítségél atméretezzük, hogy illeszkedjen a készülő képre.
+            <programlisting><![CDATA[
+(set! textfs (car (gimp-text-layer-new image text font fontsize PIXELS)))
+(gimp-image-insert-layer image textfs 0 -1)
+(gimp-layer-set-offsets textfs (- (/ width 2) (/ text-width 2))  (/ height 2))
+(gimp-layer-resize-to-image-size textfs)]]>
+            </programlisting>
+        </para>
+        <para>
+            A szöveg forgatását a gimp-item-transform-rotate-simple eljárással valósítjuk meg. Ennek először a szövegréteget, majd a forgatás mérétkét adjuk paraméterül. Végül a gimp-image-merge-down öszzevonja az képet a szövegréteggel.
+            <programlisting><![CDATA[
+(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate-simple text-layer ROTATE-180 TRUE 0 0)
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))
+(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate text-layer (/ *pi* 2) TRUE 0 0)
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))
+(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate text-layer (/ *pi* 4) TRUE 0 0)
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))
+    
+(set! text-layer (car (gimp-layer-new-from-drawable textfs image)))
+(gimp-image-insert-layer image text-layer 0 -1)
+(gimp-item-transform-rotate text-layer (/ *pi* 6) TRUE 0 0)
+(set! textfs (car(gimp-image-merge-down image text-layer CLIP-TO-BOTTOM-LAYER)))    
+    
+(plug-in-autocrop-layer RUN-NONINTERACTIVE image textfs)
+(set! textfs-width (+ (car(gimp-drawable-width textfs)) 100))
+(set! textfs-height (+ (car(gimp-drawable-height textfs)) 100))
+        
+(gimp-layer-resize-to-image-size textfs)]]>
+            </programlisting>
+        </para>
+        <para>
+            A gimp-image-select-ellipse azt mondja a kijelölőnek, hogy cserélje az előző kijelölőmaszk tartalmát.
+            <programlisting><![CDATA[
+(gimp-image-select-ellipse image CHANNEL-OP-REPLACE (- (- (/ width 2) (/ textfs-width 2)) 18) 
+    (- (- (/ height 2) (/ textfs-height 2)) 18) (+ textfs-width 36) (+ textfs-height 36))
+(plug-in-sel2path RUN-NONINTERACTIVE image textfs)
+        
+(gimp-context-set-brush-size 22)
+(gimp-edit-stroke textfs)
+    
+(set! textfs-width (- textfs-width 70))
+(set! textfs-height (- textfs-height 70))
+    
+(gimp-image-select-ellipse image CHANNEL-OP-REPLACE (- (- (/ width 2) (/ textfs-width 2)) 18) 
+    (- (- (/ height 2) (/ textfs-height 2)) 18) (+ textfs-width 36) (+ textfs-height 36))
+(plug-in-sel2path RUN-NONINTERACTIVE image textfs)
+        
+(gimp-context-set-brush-size 8)
+(gimp-edit-stroke textfs)]]>
+            </programlisting>
+        </para>
+        <para>
+            A gradient layert aktívra állítjuk a gimp-context-set-gradient alkalmazásásval.
+            A gimp-edit-blend segítségével a kezdő- és végkoordináták közötti átmenetet alakítjuk.
+            Végül pedig használjuk a gimp-display-new és gimp-image-clean-all eljárásokat a mandalánk betöltéséhez.
+            <programlisting><![CDATA[
+(set! gradient-layer (car (gimp-layer-new image width height RGB-IMAGE "gradient" 100 LAYER-MODE-NORMAL-LEGACY)))
+    
+(gimp-image-insert-layer image gradient-layer 0 -1)
+(gimp-image-select-item image CHANNEL-OP-REPLACE textfs)
+(gimp-context-set-gradient gradient) 
+(gimp-edit-blend gradient-layer BLEND-CUSTOM LAYER-MODE-NORMAL-LEGACY GRADIENT-RADIAL 100 0 
+	REPEAT-TRIANGULAR FALSE TRUE 5 .1 TRUE (/ width 2) (/ height 2) (+ (+ (/ width 2) (/ textfs-width 2)) 8) (/ height 2))
+	
+(plug-in-sel2path RUN-NONINTERACTIVE image textfs)
+(set! textfs (car (gimp-text-layer-new image text2 font fontsize PIXELS)))
+(gimp-image-insert-layer image textfs 0 -1)
+(gimp-message (number->string text2-height))
+(gimp-layer-set-offsets textfs (- (/ width 2) (/ text2-width 2)) (- (/ height 2) (/ text2-height 2)))
+    
+(gimp-display-new image)
+(gimp-image-clean-all image)]]>
+    </programlisting>
+        </para>
+        <para>
+            A kód a következő képet generálja le nekünk, lehet nem volt szerencsés a színválasztás, de ezt kaptuk:
+            <figure>
+                <title>Kész mandala</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/mandala2.png" format="PNG" scale="70"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+            
+        </para>
+    </section>
+    </chapter>
