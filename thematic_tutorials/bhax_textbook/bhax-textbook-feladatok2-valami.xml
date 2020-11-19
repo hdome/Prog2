@@ -1,0 +1,261 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, !</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    
+    <section>
+        <title>OOCWC Boost ASIO hálózatkezelése</title> 
+        <para>
+            Mutassunk rá a scanf szerepére és használatára! <link xlink:href="https://github.com/nbatfai/robocar-emulator/blob/master/justine/rcemu/src/carlexer.ll">https://github.com/nbatfai/robocaremulator/blob/master/justine/rcemu/src/carlexer.ll</link>
+        </para>
+        
+        <para>
+            Az <function>sscanf</function> függvény bemenetül formázott sztringet vár. Az első paraméter lesz maga a
+            sztring, amit beolvas, a további paraméterek azt mondják meg, hogyan tárolja.
+            
+<programlisting language="c++"><![CDATA[
+while ( std::sscanf ( data+nn, "<OK %d %u %u %u>%n", &idd, &f, &t, &s, &n ) == 4 )
+    {
+        nn += n;
+        gangsters.push_back ( Gangster {idd, f, t, s} );
+    }]]></programlisting>
+        </para>
+        <para>
+            Ebben a példában egy olyan stringet keresünk, amely <![CDATA[<OK]]>-val kezdődik. Ezt követi egy egész és 
+            három előjel nélküli egész. Az utolsó paraméter egy olyan egész lesz, amiben a <function>sscanf</function>
+            a beolvasoott bájtok számát adja meg. Ezt az <function>n</function> változóban fogjuk eltárolni. Ezt arra 
+            fogjuk használni, hogy a beolvasni kívánt sztringen nem menjünk túl. Azért szükséges a beolvasást cikluson belül
+            megvalósítani, mert nem tudjuk, hogy hány gengszter találaható a térképen. A ciklus addig tart, amíg az argumentumlista 
+            4 elemének értéket tud adni, mivel a <function>sscanf</function> sikeres beolvasás esetén a helyesen illeszkedő elemek számát adja vissza.
+        </para>
+    </section>
+    
+
+    
+    <section>
+        <title>SamuCam</title>
+        <para>
+            Mutassunk rá a webcam (pl. Androidos mobilod) kezelésére ebben a projektben:
+            <link xlink:href="https://github.com/nbatfai/SamuCam">https://github.com/nbatfai/SamuCam</link>  
+        </para>
+        <para>
+            A Samucam lényege, hogy a program képes legyen felismerni az emberi arcokat videók és képek alapján. 
+            Ezekhez használhatunk egy androidos készülék kameráját, vagy éppen laptopunk webkameráját is.
+        </para>
+        <para>
+            A videoCapture-nek az open függvénye niytja meg a VideoStream-et. Alapból mobilos felhasználáshoz készült 
+            a program, ezért 0-t kell írnunk, ha webkamerát akarunk használni, mivel ez lesz a gépen elérhető 
+            alapértelmezett kamera. Ezután a kamera méreteit, illetve FPS-ét adjuk meg.
+<programlisting language="C++"><![CDATA[
+SamuCam::SamuCam ( std::string videoStream, int width = 176, int height = 144 )
+  : videoStream ( videoStream ), width ( width ), height ( height )
+{
+  openVideoStream();
+}
+SamuCam::~SamuCam ()
+{
+}
+void SamuCam::openVideoStream()
+{
+  videoCapture.open ( 0 );
+  videoCapture.set ( CV_CAP_PROP_FRAME_WIDTH, width );
+  videoCapture.set ( CV_CAP_PROP_FRAME_HEIGHT, height );
+  videoCapture.set ( CV_CAP_PROP_FPS, 10 );
+}]]>
+</programlisting>
+        </para>
+        <para>
+            A CascadeClassifier tárgyak felismerésére szolgál, ám jelen esetben ez teszi lehetővé az arcfeldolgozást a kamerán keresztül.
+            A megfelelő működés érdekében le kell szednünk egy XML fájlt, amelyek az arcképek felismerését biztosítják.
+<programlisting language="C++"><![CDATA[
+void SamuCam::run()
+{
+  cv::CascadeClassifier faceClassifier;
+  std::string faceXML = "lbpcascade_frontalface.xml"; // https://github.com/Itseez/opencv/tree/master/data/lbpcascades
+  if ( !faceClassifier.load ( faceXML ) )
+    {
+      qDebug() << "error: cannot found" << faceXML.c_str();
+      return;
+    }]]>
+</programlisting>
+        </para>
+        <para>
+            Képkockáról képkockára beolvassa a képet a read függvény. A kapott képkockát először átméretezi, szürkére színezi és kiegyenlíti a hisztogramját.
+<programlisting language="C++"><![CDATA[
+while ( videoCapture.read ( frame ) )
+        {
+          if ( !frame.empty() )
+            {
+              cv::resize ( frame, frame, cv::Size ( 176, 144 ), 0, 0, cv::INTER_CUBIC );
+              std::vector<cv::Rect> faces;
+              cv::Mat grayFrame;
+              cv::cvtColor ( frame, grayFrame, cv::COLOR_BGR2GRAY );
+              cv::equalizeHist ( grayFrame, grayFrame );]]>
+</programlisting>
+        </para>
+        <para>
+            A detectMultiSacle segítségével megy végbe az arcok keresése. Ha talál egyet, akkor létrehoz egy QImage-t. A faceChanged egy signal lesz, aminek hatására egy keretet rajzolunk az arc köre és letrejön egy újabb QImage. A webcamChanged signal-ra pedig egy újabb képkocka beolvasása jön 80ms késleltetéssel.
+<programlisting language="C++"><![CDATA[
+faceClassifier.detectMultiScale ( grayFrame, faces, 1.1, 3, 0, cv::Size ( 60, 60 ) );
+if ( faces.size() > 0 )
+{
+    cv::Mat onlyFace = frame ( faces[0] ).clone();
+        QImage* face = new QImage ( onlyFace.data,
+        onlyFace.cols,
+        onlyFace.rows,
+        onlyFace.step,
+        QImage::Format_RGB888 );
+cv::Point x ( faces[0].x-1, faces[0].y-1 );
+cv::Point y ( faces[0].x + faces[0].width+2, faces[0].y + faces[0].height+2 );
+cv::rectangle ( frame, x, y, cv::Scalar ( 240, 230, 200 ) );
+emit  faceChanged ( face );
+}
+QImage*  webcam = new QImage ( frame.data,
+        frame.cols,
+        frame.rows,
+        frame.step,
+        QImage::Format_RGB888 );
+        emit  webcamChanged ( webcam );
+}
+QThread::msleep ( 80 );
+}]]>
+</programlisting>
+            
+        </para>
+    </section>
+    <section>
+        <title>BrainB</title>
+        <para>
+            Mutassuk be a Qt slot-signal mechanizmust ebben a projektben: <link xlink:href="https://github.com/nbatfai/esport-talent-search">https://github.com/nbatfai/esport-talent-search</link>
+        </para>
+        <para>
+            A grafikus felületek fejlesztésekor előbb-utóbb szükség lesz arra, hogy egyes elemeken végrehajtott interakciók
+            kifejtsék hatásukat más elemekre is. Erre vezette be a Qt a signal-slot mechanizmust.
+        </para>
+        <para>
+            A signal olyan függvény, ami csak deklarációval rendelkezik, azaz nem lehet visszatérési értéke, de lehetnek paraméterei.
+            Fontos tudni, hogy a signal-t nem tudjuk hagyományosan meghívni, hanem emit makrót kell használnunk.
+            <programlisting>
+                emit mysignal(value);
+            </programlisting>
+            A slot-ok viszont tekinthetőek teljesértékű függvényeknek. Meghívhatóak a megszokott módon, redndelkezhet 
+            paraméterekkel, azonban itt sem megengedett a visszatérési érték. Csak kompatibilis signal-slot párokat köthetünk össze.
+            Ezt úgy kell érteni, hogy például ha a signal paramétere 2 db egész, akkor a slot-nak vagy nem lehet paramétere, vagy azonos paramétert kell kérnie.
+            A signal paraméter értékei átadhatóak a slotnak.
+        </para>
+        <para>
+            Nézzünk példát egy BrainB-ből vett signal-slot mechanizmusra.
+            <programlisting language="c++"><![CDATA[
+connect ( brainBThread, SIGNAL ( heroesChanged ( QImage, int, int ) ),
+    this, SLOT ( updateHeroes ( QImage, int, int ) ) );
+connect ( brainBThread, SIGNAL ( endAndStats ( int ) ),
+    this, SLOT ( endAndStats ( int ) ) );]]>
+            </programlisting>
+            Az első <function>connect</function> az <function>updateHeroes</function>-t fogja futtatni a <function>heroesChanged</function> 
+            signal-ra. A második arra szolgál, hogy a futási idő lejártával kiirassuk a statisztikát
+        </para>
+    </section>
+    <section>
+        <title>EPAM: ASCII Art</title>
+        <para>
+            ASCII Art in Java! Implementálj egy Java parancssori programot, ami beolvas egy képet és kirajzolja
+            azt a parancssorba és / vagy egy szöveges fájlba is ASCII karakterekkel.
+        </para>
+        <para>
+            Ebben a feladatban egyetlen osztályunk az <function>AsciiPrinter</function> lesz, ami bemenetként kap egy képet, és feldolgozza azt 
+            az <function>ASCII_PIXEL</function> karaktereivel (amik a következők: $ jel, a #, csillag, kettőspont, pont és a szóköz) pixelenként. 
+        </para>
+        <para>
+            A <function>print</function> függvény felel a kép feldolgozásáért. Itt a már bekért képet pixelenként körbejárja a két forciklus,
+            és minden pixelhez kér majd egy ASCII karaktert. Mivel fájlból olvasunk illik használni kivételkezelést.
+            <programlisting language="C++"><![CDATA[
+public void print() throws IOException {
+		for (int i = 0; i < image.getHeight(); i++) {
+		      for (int j = 0; j < image.getWidth(); j++) {
+				    outputStream.write(getAsciiChar(image.getRGB(j, i)));
+		}
+		outputStream.write(NEW_LINE);
+                }]]>
+</programlisting>
+        </para>
+        <para>
+            A következő függvények a színfeldolgozásért felelnek. Attól függően, hogy milyen színű a beolvasott pixel, egy hozzá megfelelő értékű
+            szürkét rendel egy fekete-fehér skáláról.
+            <programlisting language="C++"><![CDATA[
+            public static char getAsciiChar(int pixel) {
+            return getAsciiCharFromGrayScale(getGreyScale(pixel));
+            }
+            
+            public static int getGreyScale(int argb) {
+            int red = (argb >> 16) & 0xff;
+            int green = (argb >> 8) & 0xff;
+            int blue = (argb) & 0xff;
+            return (red + green + blue) / 3;
+            }
+            
+            public static char getAsciiCharFromGrayScale(int greyScale) {
+            return ASCII_PIXELS[greyScale / 51];
+            }
+            
+            }]]>
+            </programlisting>
+        </para>
+        <para>
+            Végül pedig ki is kell iratni a létrehozott kódtömböt, ami a <function>Main</function>-ben történek szokás szerint. 
+            Megint fájllal dolgozunk ezért a kivételkezelés hasznunkra válik.  
+            <programlisting language="C++"><![CDATA[
+            public class Main {
+
+	public static void main(String[] args) throws IOException {
+		String imageName = args[0];
+		String textFileName = args.length != 2 ? null : args[1];
+		OutputStream outputStream = textFileName == null ? System.out : new FileOutputStream(textFileName);
+		BufferedImage image = ImageIO.read(new File(imageName));
+
+		new AsciiPrinter(outputStream, image).print();
+	}
+
+}
+            
+            }]]>
+            </programlisting>  
+        </para>
+    </section>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</chapter>

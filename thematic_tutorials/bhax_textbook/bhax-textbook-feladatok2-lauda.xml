@@ -1,0 +1,287 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Lauda!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    
+    <section>
+        <title>Port scan</title>
+        <para>
+            Mutassunk rá ebben a port szkennelő forrásban a kivételkezelés szerepére!
+        </para>
+        <para>
+            <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287</link>
+        </para>
+        <para>
+            <programlisting language="java"><![CDATA[
+public class KapuSzkenner {
+    public static void main(String[] args) {
+        
+        for(int i=0; i<1024; ++i)
+            
+            try {
+                
+                java.net.Socket socket = new java.net.Socket(args[0], i);
+                
+                System.out.println(i + " figyeli");
+                
+                socket.close();
+                
+            } catch (Exception e) {
+                
+                System.out.println(i + " nem figyeli");
+                
+            }
+    }
+    
+}]]>
+            </programlisting>
+            A program az argumentumként kapott gép 1024-nél kisebb portjaihoz próbál meg kapcsolódni. Ehhez a kapcsolódáshoz 
+            Java-ban egy Socket típusú objektumra van szükségünk, ami egy IP-címet és egy portot vár. Ha sikerül a kapcsolat létesítése, 
+            akkor a try blokk fut le. Ez kiírja, hogy a port figyelve van, és bezárja. Ellenkező esetben kivételt dob a program és catch blokk megy végbe és a "nem figyeli" válasz kapjuk.
+            <programlisting><![CDATA[
+$ java KapuSzkenner localhost ]]>
+    </programlisting>
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="img/portscan.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        
+    </section>
+    <section>
+        <title>Android játék</title>
+        <para>
+            Írjunk egy egyszerű Androidos „játékot”! Építkezzünk például a 2. hét „Helló, Android!” feladatára!
+        </para>
+        <para>
+            Ebben a feladatban egy 3x3-as amőbát készítünk, a <link xlink:href="https://codinginflow.com/tutorials/android/tic-tac-toe/">Coding in Flow tutoriálja</link> alapján Andorid Studio-ban.
+        </para>
+        <para>
+            Kezdjük az <filename>activity_main.xml</filename>-el. Ebben hozzuk létre a játékosok állását két TextView segítségével.
+            Ezenkívül létrehozunk egy reset gombot és magát a játátékteret biztosító 9 választható területet szintén érinthető gombok segítségével.
+            <programlisting language="Java"><![CDATA[
+			 <TextView
+            android:id="@+id/text_view_p1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player 1: 0"
+            android:textSize="30sp" />
+			
+			...
+			
+			<Button
+            android:id="@+id/button_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="33dp"
+            android:text="reset" />
+			
+			...
+			
+			 <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+ 
+        <Button
+            android:id="@+id/button_00"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="60sp" />
+ 
+        <Button
+            android:id="@+id/button_01"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="60sp" />
+ 
+        <Button
+            android:id="@+id/button_02"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="60sp" />
+ 
+    </LinearLayout>
+	
+			...
+		/>]]></programlisting>
+        </para>
+        <para>
+            A <filename> MainActivity.java</filename>-ban 9 terület egy kétdimenziós tömbben tárolódik. Az egyedi id-t két for ciklus rendeli hozzá a gombokhoz. 
+            <programlisting language="Java"><![CDATA[
+	for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                String buttonID = "button_" + i + j;
+                int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
+                buttons[i][j] = findViewById(resID);
+                buttons[i][j].setOnClickListener(this);
+            }
+        }
+		]]></programlisting>
+            A reset gomb megnyomása meghívja a resetGame() függvényt, ami nullázza a pontokat és táblát (üres sztringet rendel a cellákhoz).
+            <programlisting language="Java"><![CDATA[
+Button buttonReset = findViewById(R.id.button_reset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetGame();
+            }
+        });
+    private void resetGame() {
+        player1Points = 0;
+        player2Points = 0;
+        updatePointsText();
+        resetBoard();
+    }
+	
+	private void updatePointsText() {
+        textViewPlayer1.setText("Player 1: " + player1Points);
+        textViewPlayer2.setText("Player 2: " + player2Points);
+    }
+	
+    private void resetBoard() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                buttons[i][j].setText("");
+            }
+        }
+        roundCount = 0;
+        player1Turn = true;
+    }
+		]]></programlisting>
+        </para>
+        <para>
+            Ha a megérintett terület üres, akkor X-et rak bele páratlan lépés alkalmával, és O kerül bele páros lépéseknél. 
+            Akkor nyer valaki ha azonos szimbúlum van egy teljes sorban, teljes oszlopban vagy atlósan. Ezt a checkForWin boolean függvény fogja megmondani.
+            <programlisting language="Java"><![CDATA[
+@Override
+    public void onClick(View v) {
+        if (!((Button) v).getText().toString().equals("")) {
+            return;
+        }
+        if (player1Turn) {
+            ((Button) v).setText("X");
+        }else {
+            ((Button) v).setText("O");
+        }
+        roundCount++;
+        if (checkForWin()) {
+            if (player1Turn) {
+                player1Wins();
+            } else {
+                player2Wins();
+            }
+        } else if (roundCount == 9) {
+            draw();
+        } else {
+            player1Turn = !player1Turn;
+        }
+    }
+    private boolean checkForWin() {
+        String[][] field = new String[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                field[i][j] = buttons[i][j].getText().toString();
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (field[i][0].equals(field[i][1])
+                && field[i][0].equals(field[i][2])
+                && !field[i][0].equals("")) {
+                return true;
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (field[0][i].equals(field[1][i])
+                    && field[0][i].equals(field[2][i])
+                    && !field[0][i].equals("")) {
+                return true;
+            }
+        }
+        if (field[0][0].equals(field[1][1])
+                && field[0][0].equals(field[2][2])
+                && !field[0][0].equals("")) {
+            return true;
+        }
+        if (field[0][2].equals(field[1][1])
+                && field[0][2].equals(field[2][0])
+                && !field[0][2].equals("")) {
+            return true;
+        }
+        return false;
+    }]]>
+</programlisting>
+        </para>
+        <para>
+            A játékosok eredményét két külön változóban tároljuk. Amikor nyer valamelyikük, növeljük a megfelelő értéket, valamint egy felugró ablak fogad minket, ami tájékoztat a kör eredményéről és törlődik a tábla. Döntetlen nem növelünk értéket, csak resetlejük a board-ot.
+            <programlisting language="Java"><![CDATA[
+private void player1Wins() {
+        player1Points++;
+        Toast.makeText(this, "Player 1 wins!", Toast.LENGTH_SHORT).show();
+        updatePointsText();
+        resetBoard();
+    }
+    private void player2Wins() {
+        player2Points++;
+        Toast.makeText(this, "Player 2 wins!", Toast.LENGTH_SHORT).show();
+        updatePointsText();
+        resetBoard();
+    }
+    private void draw() {
+        Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
+        resetBoard();
+    }]]>
+</programlisting>
+        </para>
+    </section>
+    
+    <section>
+        <title>JUnit teszt</title>
+        <para>
+            A <link xlink:href="https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat">https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat</link>
+            poszt kézzel számított mélységét és szórását dolgozd be egy Junit tesztbe (sztenderd védési feladat
+            volt korábban).
+        </para>
+        <para>
+            A JUnit egy egységtesztelő keretrendszer. Ellenőrizhtejük vele, hogy egy program az elvártak szerint működik-e. 
+            A valós eredmény és az elvárt eredmény összehasonlítása állítások (pl.: assertEquals) alapján zajlik.
+        </para>
+        <para>
+            A fentebbi poszt sorozata alapján fogjuk elvégezni a tesztet. A string bitenként kerül feldolgozásra, a BinfaTest for ciklusában.
+            Az assertEquals első paramétere lesz a várt érték, azaz ide adjuk meg a papíron kapott értéket minden esetben, mjad meghívjuk a getMelyseg, getAtlag, getSzoras függvényeket. A szórás esetében a függvény pontosabb értéket adhat, ezért megadjuk a lehetséges eltérést.
+            <programlisting language="Java"><![CDATA[
+package binfa;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+class BinfaTest {
+	LZWBinFa binfa = new LZWBinFa();
+	
+	@Test
+	void test() {
+		for (char c: "011110010010010000111".toCharArray()) {
+			binfa.egyBitFeldolg(c);
+		}
+		
+		assertEquals(4, binfa.getMelyseg());
+		assertEquals(2.75, binfa.getAtlag());
+		assertEquals(0.957427, binfa.getSzoras(), 0.0001);
+	}
+}]]>
+		</programlisting>
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="img/junittest.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+</chapter>

@@ -15,12 +15,12 @@
             <link xlink:href="https://youtu.be/DL6iQwPx1Yw">https://youtu.be/DL6iQwPx1Yw(8:05-től)</link>
         </para>
         <para>
-            <programlisting language="c++"><![CDATA[
-            std::sort ( gangsters.begin(), gangsters.end(), [this, cop] ( Gangster x, Gangster y )
-            {
-                return dst ( cop, x.to ) < dst ( cop, y.to );
-            } );
-		]]></programlisting>
+<programlisting language="c++"><![CDATA[
+std::sort ( gangsters.begin(), gangsters.end(), [this, cop] ( Gangster x, Gangster y )
+{
+return dst ( cop, x.to ) < dst ( cop, y.to );
+} );
+]]></programlisting>
             Ahogy látható, a <function>sort</function> függvény három paraméterrel rendelkezik. Az első két paraméter azt adja meg, hogy mettől meddig menjen a függvény. Ebben az esetben
             a <function>gangsters</function> nevű vektor elejétől fog menni a végéig, amit a <function>begin()</function> és <function>end()</function> függvények segítségével adunk meg.
             A harmadik paraméter egy függvény ami a rendezés alapjául fog szolgálni. Ez egy név nélküli, úgynevezett lambda függvény.
@@ -84,26 +84,26 @@ std::vector<std::pair<std::string, int>> sort_map ( std::map <std::string, int> 
             A csapatok kezeléséhez a <function>Csapat</function> osztály feladata, amely a 
             <function>Comparable</function> interfészt implementálja.
             A kód legvégén található a kis kódcsipetünk.
-            <programlisting language="java"><![CDATA[
-                class Csapat implements Comparable<Csapat> {
-                    protected String nev;
-                    protected double ertek;
+<programlisting language="java"><![CDATA[
+class Csapat implements Comparable<Csapat> {
+protected String nev;
+protected double ertek;
                   
-                    public Csapat(String nev, double ertek) {
-                      this.nev = nev;
-                      this.ertek = ertek;
-                    }
+public Csapat(String nev, double ertek) {
+this.nev = nev;
+this.ertek = ertek;
+}
                   
-                    public int compareTo(Csapat csapat) {
-                      if (this.ertek < csapat.ertek) {
-                        return -1;
-                      } else if (this.ertek > csapat.ertek) {
-                        return 1;
-                      } else {
-                        return 0;
-                      }
-                    }
-        }]]></programlisting>
+public int compareTo(Csapat csapat) {
+if (this.ertek < csapat.ertek) {
+return -1;
+} else if (this.ertek > csapat.ertek) {
+return 1;
+} else {
+return 0;
+}
+}
+}]]></programlisting>
         </para>
         <para>
             Látunk benne egy <function>Csapat</function> nevű objektumot, aminek van egy neve és egy értéke. A 
