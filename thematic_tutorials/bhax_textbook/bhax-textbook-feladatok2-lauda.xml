@@ -38,18 +38,13 @@ public class KapuSzkenner {
     
 }]]>
             </programlisting>
-            A program az argumentumként kapott gép 1024-nél kisebb portjaihoz próbál meg kapcsolódni. Ehhez a kapcsolódáshoz 
+            A program megpróbál az argumentumként kapott gép 1024-nél kisebb portjaihoz csatlakozni. Ehhez a kapcsolódáshoz 
             Java-ban egy Socket típusú objektumra van szükségünk, ami egy IP-címet és egy portot vár. Ha sikerül a kapcsolat létesítése, 
             akkor a try blokk fut le. Ez kiírja, hogy a port figyelve van, és bezárja. Ellenkező esetben kivételt dob a program és catch blokk megy végbe és a "nem figyeli" válasz kapjuk.
             <programlisting><![CDATA[
 $ java KapuSzkenner localhost ]]>
     </programlisting>
         </para>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref="img/portscan.png" format="PNG"/>
-            </imageobject>
-        </mediaobject>
         
     </section>
     <section>

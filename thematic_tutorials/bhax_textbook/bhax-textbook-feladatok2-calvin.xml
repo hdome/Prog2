@@ -255,30 +255,22 @@ for i in range(10):
             felismerni egyes objektumokat. Ezt a hátsó kamerán keresztül próbálja megtenni valós időben. A 
             program felismerte az esetek többségében az elektronikai cikkeket, például a laptopomat és az egeret.
             Mivel nem állt rendelkezésemre olyan eszköz, ami kompatibilis lett volna a TensorFlow hivatalos 
-            tárgyfelismerőjével, ezért másik app letöltésére kényszerültem.
+            tárgyfelismerőjével, ezért másik app letöltésére kényszerültem. 
         </para>
         <para>
             <mediaobject>
                 <imageobject>
-                    <imagedata fileref="img/cellphone.jpg" format="JPG" scale="25"/>
+                    <imagedata fileref="img/tensor1.png" format="PNG" scale="60"/>
                 </imageobject>
             </mediaobject>
             <mediaobject>
                 <imageobject>
-                    <imagedata fileref="img/mouse.jpg" format="JPG" scale="25"/>
+                    <imagedata fileref="img/tensor2.png" format="PNG" scale="60"/>
                 </imageobject>
             </mediaobject>
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="img/chair.jpg" format="JPG" scale="25"/>
-                </imageobject>
-            </mediaobject>
-            Voltak tárgyak, amit könnyen felismert, azonban volt amit az esetek kis százalékában tudott csak felismerni.
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="img/mouse2.jpg" format="JPG" scale="25"/>
-                </imageobject>
-            </mediaobject>
+
+            Voltak tárgyak, amit könnyen felismert, azonban volt amit az esetek kis százalékában tudott csak felismerni. Illetve képes 
+            egyszerre több tárgyat is felismerni.
         </para>
     </section>		
 </chapter>
